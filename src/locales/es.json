@@ -1,0 +1,91 @@
+{
+  "nav": {
+    "about": "Acerca de",
+    "gallery": "Galería",
+    "amenities": "Amenidades",
+    "location": "Ubicación",
+    "contact": "Contacto",
+    "bookNow": "Reservar Ahora"
+  },
+  "hero": {
+    "label": "DELROM · RÍO PIEDRAS, PUERTO RICO",
+    "headline": "Donde cada llegada",
+    "headlineItalic": "se siente como hogar.",
+    "description": "Un espacio de hospitalidad cuidadosamente diseñado en San Juan — combinando comodidad, estilo y detalles curados para una estadía inolvidable.",
+    "cta1": "Reservar en Booking.com",
+    "cta2": "Saber Más"
+  },
+  "about": {
+    "label": "01 — Acerca de",
+    "headline": "Un hogar",
+    "headlineItalic": "lejos",
+    "headlineEnd": "del hogar,\nen el corazón de San Juan.",
+    "description": "DelRom es un espacio de hospitalidad cuidadosamente diseñado, creado para ofrecer comodidad, estilo y una experiencia acogedora en cada estadía. Se destina a sentirse como un hogar lejos del hogar, combinando funcionalidad con detalles cuidadosamente curados que mejoran la experiencia de cada huésped. Su ubicación estratégica proporciona fácil acceso a áreas comerciales, playas y puntos de interés clave, lo que la convierte en una opción ideal tanto para viajeros de ocio como de negocios. En DelRom, cada estadía se define por facilidad, conveniencia y una atmósfera que te invita a regresar.",
+    "stats": {
+      "rating": "5★",
+      "ratingLabel": "Calificación de Huéspedes",
+      "pr": "PR",
+      "prLabel": "Puerto Rico",
+      "support": "24/7",
+      "supportLabel": "Soporte al Huésped"
+    }
+  },
+  "gallery": {
+    "label": "02 — Galería",
+    "headline": "Cada rincón,",
+    "headlineItalic": "curado.",
+    "description": "Líneas limpias, materiales cálidos y detalles reflexivos en todas partes.",
+    "heroAlt": "Vista general del espacio DelRom",
+    "photo1Alt": "Sala de estar de DelRom",
+    "photo2Alt": "Dormitorio de DelRom",
+    "photo3Alt": "Cocina de DelRom",
+    "photo4Alt": "Comedor y detalles de DelRom"
+  },
+  "amenities": {
+    "label": "03 — Amenidades",
+    "headline": "Todo lo que necesitas,",
+    "headlineItalic": "nada que no necesites.",
+    "items": {
+      "wifi": "WiFi Rápido",
+      "ac": "Aire Acondicionado",
+      "kitchen": "Cocina Completamente Equipada",
+      "tv": "Smart TV",
+      "checkin": "Check-In por cuenta propia",
+      "linens": "Ropa de Cama Premium",
+      "laundry": "Lavadora y Secadora",
+      "parking": "Estacionamiento Seguro"
+    }
+  },
+  "location": {
+    "label": "04 — Ubicación",
+    "headline": "Río Piedras,",
+    "headlineItalic": "San Juan, Puerto Rico.",
+    "description": "Estratégicamente ubicado en el vibrante barrio de Río Piedras — un centro cultural y comercial que te da acceso rápido a todo lo que San Juan tiene para ofrecer, ya sea que estés aquí por negocios o placer.",
+    "mapTitle": "Mapa de ubicación de DelRom",
+    "mapPlaceholder": "Mapa próximamente",
+    "highlights": {
+      "shopping": "Compras",
+      "shoppingDetail": "Plaza Las Américas y mercados locales cerca",
+      "beaches": "Playas",
+      "beachesDetail": "Playas de Condado e Isla Verde a minutos",
+      "dining": "Gastronomía",
+      "diningDetail": "Diversa escena gastronómica a tu alcance",
+      "business": "Distrito Comercial",
+      "businessDetail": "Cerca de centros corporativos principales",
+      "transit": "Transporte Público",
+      "transitDetail": "Tren Urbano y rutas de autobús accesibles",
+      "airport": "Aeropuerto",
+      "airportDetail": "Luis Muñoz Marín ~20 min de distancia"
+    }
+  },
+  "contact": {
+    "label": "05 — Reserva Tu Estadía",
+    "headline": "¿Listo para experimentar",
+    "headlineItalic": "DelRom?",
+    "description": "Reserva directamente en Booking.com para las mejores tarifas, o contáctanos por correo electrónico con cualquier pregunta sobre tu estadía.",
+    "cta1": "Reservar en Booking.com"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados."
+  }
+}

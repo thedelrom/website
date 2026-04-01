@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Jost', system-ui, sans-serif;
+    font-weight: 300;
+    color: #6B5B52;
+    background-color: #FAF8F4;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    color: #2C2520;
+  }
+
+  * {
+    border-radius: 0 !important;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply text-xs tracking-widest uppercase text-terracotta font-sans font-light;
+  }
+
+  .btn-primary {
+    @apply bg-terracotta text-warmWhite px-8 py-3 text-sm tracking-widest uppercase font-sans font-light
+           hover:bg-espresso transition-colors duration-300 inline-block;
+  }
+
+  .btn-outline {
+    @apply border border-current px-8 py-3 text-sm tracking-widest uppercase font-sans font-light
+           hover:bg-white/10 transition-colors duration-300 inline-block;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.9s ease forwards;
+}
+
+.animate-fade-up-delay {
+  animation: fadeUp 0.9s 0.25s ease both;
+}
+
+.animate-fade-up-delay-2 {
+  animation: fadeUp 0.9s 0.5s ease both;
+}
+
+/* Language switch: main + footer (skipped on first paint) */
+@keyframes i18nContentSwap {
+  from {
+    opacity: 0.45;
+    transform: translateY(0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-i18n-swap {
+  animation: i18nContentSwap 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-i18n-swap {
+    animation: none;
+  }
+}

@@ -1,0 +1,54 @@
+---
+description: DelRom site — stack, imports, Tailwind, React, and agent behavior
+alwaysApply: true
+---
+
+# DelRom project rules
+
+## Imports (`@` alias)
+
+- Map `@` to `src/`. **Do not** use deep relative paths like `../config.js` from components.
+- Use `@/config.js`, `@/components/navbar.jsx`, `@/index.css`, etc. **File names:** kebab-case (e.g. `hero.jsx`, `app.jsx`).
+- Vite resolves this via `vite.config.js`; editors use `jsconfig.json` `paths`.
+
+```jsx
+// Good
+import { BOOKING_URL } from '@/config.js'
+import Logo from '@/components/logo.jsx'
+
+// Avoid
+import { BOOKING_URL } from '../config.js'
+```
+
+## Stack
+
+- React 18, Vite, Tailwind CSS v3. Static site only; no backend.
+- Functional components and hooks. Prefer controlled form inputs when adding forms.
+- Icons: `lucide-react` (thin stroke, architectural) for list UI; `text-taupe` / `strokeWidth` ~1.2–1.25 to match Amenities-style SVGs.
+
+## Tailwind and layout
+
+- Use theme colors from `tailwind.config.js` (`warmWhite`, `sand`, `taupe`, `terracotta`, `espresso`, `mid`).
+- Prefer Tailwind spacing scale and `rem` for non-default sizes. Avoid arbitrary `px` for layout and typography.
+- No rounded corners on UI unless explicitly requested (brand is sharp / architectural).
+- Headings: Cormorant Garamond (`font-serif`); body/UI: Jost (`font-sans`), `font-light`.
+
+## Code quality
+
+- Keep changes scoped to the task; match existing file style and naming.
+- Remove unused imports. Avoid `console.log` in committed code.
+- Do not edit `.cursor/plans/` or user plan files unless asked.
+
+## Content and config
+
+- Public URLs and contact info live in `src/config.js` (`BOOKING_URL`, `EMAIL`, map: `getMapEmbedSrc()` — optional `GOOGLE_MAPS_EMBED_API_KEY` + `MAPS_PLACE_QUERY`, or `MAPS_EMBED_SRC` for Share → Embed / OSM).
+- Images live under `public/images/`; reference as `/images/...` in markup/CSS.
+
+## Deployment
+
+- GitHub Pages: ensure `vite.config.js` `base` matches hosting (root vs `/repo-name/`).
+- Deploy: `npm run deploy` (build + `gh-pages`).
+
+## Accessibility
+
+- Use semantic landmarks and labels on interactive controls (nav, buttons, links with clear text).
