@@ -46,8 +46,9 @@ import { BOOKING_URL } from '../config.js'
 
 ## Deployment
 
-- GitHub Pages: ensure `vite.config.js` `base` matches hosting (root vs `/repo-name/`).
-- Deploy: `npm run deploy` (build + `gh-pages`).
+- **GitHub Actions (preferred):** `.github/workflows/deploy-pages.yml` builds on push to `main` and deploys `dist/`. Repo **Settings → Pages → Source: GitHub Actions** (not “Deploy from a branch”).
+- **Manual:** `npm run deploy` pushes `dist` to `gh-pages` branch; Pages source would be **gh-pages** / **/**.
+- `vite.config.js` `base`: `'/'` for custom domain or `username.github.io`; `'/<repo>/'` only for project Pages **without** a custom domain.
 
 ## Accessibility
 

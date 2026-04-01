@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output (CI builds this; do not commit)
+dist/
+
+# Local env
+.env
+.env.*
+!.env.example
+
+# Logs / debug
+npm-debug.log*
+.DS_Store
+
+# Editor
+.idea/
+*.swp
+*.swo
+
+# Vite
+*.local
