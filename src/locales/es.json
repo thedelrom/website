@@ -22,8 +22,8 @@
     "headlineEnd": "del hogar,\nen el corazón de San Juan.",
     "description": "DelRom es un espacio de hospitalidad cuidadosamente diseñado, creado para ofrecer comodidad, estilo y una experiencia acogedora en cada estadía. Se destina a sentirse como un hogar lejos del hogar, combinando funcionalidad con detalles cuidadosamente curados que mejoran la experiencia de cada huésped. Su ubicación estratégica proporciona fácil acceso a áreas comerciales, playas y puntos de interés clave, lo que la convierte en una opción ideal tanto para viajeros de ocio como de negocios. En DelRom, cada estadía se define por facilidad, conveniencia y una atmósfera que te invita a regresar.",
     "stats": {
-      "rating": "5★",
-      "ratingLabel": "Calificación de Huéspedes",
+      "rating": "10/10",
+      "ratingLabel": "Puntuación en Booking.com",
       "pr": "PR",
       "prLabel": "Puerto Rico",
       "support": "24/7",
@@ -86,6 +86,8 @@
     "cta1": "Reservar en Booking.com"
   },
   "footer": {
-    "copyright": "Todos los derechos reservados."
+    "copyright": "Todos los derechos reservados.",
+    "designCredit": "Diseño por Nytsu",
+    "designCreditAria": "Diseño web por Nytsu — se abre en una nueva pestaña"
   }
 }

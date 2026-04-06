@@ -36,10 +36,21 @@ export default function Footer() {
             ))}
           </nav>
 
-          {/* Copyright */}
-          <p className="font-sans font-light text-xs text-mid tracking-wide">
-            © {year} DelRom. {t('footer.copyright')}
-          </p>
+          {/* Copyright & design credit */}
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <p className="font-sans font-light text-xs text-mid tracking-wide text-center md:text-right">
+              © {year} DelRom LLC. {t('footer.copyright')}
+            </p>
+            <a
+              href="https://nytsu.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans font-light text-xs text-mid tracking-wide text-center md:text-right no-underline visited:text-mid focus-visible:underline underline-offset-2"
+              aria-label={t('footer.designCreditAria')}
+            >
+              {t('footer.designCredit')}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
