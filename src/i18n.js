@@ -12,7 +12,9 @@ i18n
       en: { translation: enTranslations },
       es: { translation: esTranslations },
     },
+    supportedLngs: ['en', 'es'],
     fallbackLng: 'en',
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false,
     },

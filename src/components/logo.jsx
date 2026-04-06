@@ -11,7 +11,8 @@ export default function Logo({ showWordmark = true, showTagline = false, light =
         viewBox="0 0 44 44"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        aria-label="DelRom monogram"
+        aria-hidden="true"
+        focusable="false"
       >
         {/* Outer ring */}
         <circle cx="22" cy="22" r="20" stroke={ringColor} strokeWidth="1" fill="none" />

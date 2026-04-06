@@ -44,7 +44,7 @@ export default function About() {
           <div className="overflow-hidden aspect-[4/5] relative">
             <img
               src="/images/photo-about.jpeg"
-              alt={t('gallery.photo1Alt')}
+              alt={t('about.imageAlt')}
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
             />
           </div>

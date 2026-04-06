@@ -38,8 +38,11 @@ export default function Navbar() {
   const linkColor = scrolled ? 'text-mid hover:text-espresso' : 'text-warmWhite/80 hover:text-warmWhite'
   const langColor = scrolled ? 'text-mid hover:text-espresso' : 'text-warmWhite/80 hover:text-warmWhite'
 
+  const resolved = i18n.resolvedLanguage ?? i18n.language
+  const isSpanish = resolved.startsWith('es')
+
   const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')
+    i18n.changeLanguage(isSpanish ? 'en' : 'es')
   }
 
   return (
@@ -67,9 +70,9 @@ export default function Navbar() {
             type="button"
             onClick={toggleLanguage}
             className={`font-sans font-light text-xs tracking-widest uppercase min-w-[1.75rem] text-center transition-all duration-300 ease-out active:scale-[0.96] ${langColor}`}
-            aria-label={i18n.language === 'en' ? 'Switch to Spanish' : 'Switch to English'}
+            aria-label={isSpanish ? 'Switch to English' : 'Switch to Spanish'}
           >
-            {i18n.language === 'en' ? 'ES' : 'EN'}
+            {isSpanish ? 'EN' : 'ES'}
           </button>
           <a
             href={BOOKING_URL}
@@ -87,13 +90,14 @@ export default function Navbar() {
             type="button"
             onClick={toggleLanguage}
             className={`font-sans font-light text-xs tracking-widest uppercase min-w-[1.75rem] text-center transition-all duration-300 ease-out active:scale-[0.96] ${scrolled ? 'text-mid hover:text-espresso' : 'text-warmWhite/80 hover:text-warmWhite'}`}
-            aria-label={i18n.language === 'en' ? 'Switch to Spanish' : 'Switch to English'}
+            aria-label={isSpanish ? 'Switch to English' : 'Switch to Spanish'}
           >
-            {i18n.language === 'en' ? 'ES' : 'EN'}
+            {isSpanish ? 'EN' : 'ES'}
           </button>
 
           {/* Hamburger */}
           <button
+            type="button"
             className={`flex flex-col gap-1.5 p-2 ${scrolled ? 'text-espresso' : 'text-warmWhite'}`}
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -108,7 +112,7 @@ export default function Navbar() {
 
       {/* Mobile menu panel */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-400 bg-warmWhite ${menuOpen ? 'max-h-96' : 'max-h-0'}`}
+        className={`md:hidden overflow-hidden transition-all duration-500 bg-warmWhite ${menuOpen ? 'max-h-96' : 'max-h-0'}`}
         aria-hidden={!menuOpen}
       >
         <nav className="flex flex-col px-6 py-6 gap-5" aria-label="Mobile navigation">

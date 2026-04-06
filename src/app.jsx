@@ -17,6 +17,18 @@ export default function App() {
     skipContentLangAnim.current = false
   }, [])
 
+  useEffect(() => {
+    const lang = i18n.resolvedLanguage ?? i18n.language
+    if (lang) document.documentElement.lang = lang
+    const onLang = (lng) => {
+      document.documentElement.lang = lng
+    }
+    i18n.on('languageChanged', onLang)
+    return () => {
+      i18n.off('languageChanged', onLang)
+    }
+  }, [i18n])
+
   return (
     <>
       <Navbar />
