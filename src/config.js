@@ -2,7 +2,7 @@
 // These values are safe to commit — they are public-facing URLs, not secrets.
 
 export const BOOKING_URL     = 'https://www.booking.com/hotel/pr/delrom-4-beds-entire-apartment.html?chal_t=1775071525958&force_referer=https%3A%2F%2Fwww.google.com%2F'
-export const EMAIL           = 'info@delrom.com'
+export const EMAIL           = 'info@thedelrom.com'
 
 // --- Map (Location section) -------------------------------------------------
 // For a map that looks like Google Maps, use either A or B (A takes priority).

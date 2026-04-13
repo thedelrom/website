@@ -20,7 +20,7 @@ export default function Footer() {
 
           {/* Logo */}
           <a href="#" className="shrink-0" aria-label="DelRom home">
-            <Logo showWordmark showTagline light size="large" />
+            <Logo showWordmark showTagline light size="medium" />
           </a>
 
           {/* Nav links */}

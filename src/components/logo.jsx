@@ -26,14 +26,27 @@ export default function Logo({ showWordmark = true, showTagline = false, light =
   if (showWordmark && showTagline) raw = fullLogoSvg
   else if (showWordmark) raw = nameOnlySvg
 
-  const isLarge = size === 'large'
-  const rootClass = showWordmark
-    ? isLarge
-      ? 'block h-24 w-auto max-h-24 max-w-[min(100%,22rem)] md:h-28 md:max-h-28 md:max-w-none'
-      : 'block h-10 w-auto max-h-10'
-    : isLarge
-      ? 'block h-24 w-24 max-h-24 max-w-24 shrink-0 md:h-28 md:w-28 md:max-h-28 md:max-w-28'
-      : 'block h-10 w-10 max-h-10 max-w-10 shrink-0'
+  let rootClass
+  if (showWordmark) {
+    if (size === 'large') {
+      rootClass =
+        'block h-24 w-auto max-h-24 max-w-[min(100%,22rem)] md:h-28 md:max-h-28 md:max-w-none'
+    } else if (size === 'medium') {
+      rootClass = showTagline
+        ? 'block h-16 w-auto max-h-16 max-w-[min(100%,20rem)] md:h-20 md:max-h-20 md:max-w-none'
+        : 'block h-12 w-auto max-h-12 md:h-14 md:max-h-14'
+    } else {
+      rootClass = 'block h-10 w-auto max-h-10'
+    }
+  } else if (size === 'large') {
+    rootClass =
+      'block h-24 w-24 max-h-24 max-w-24 shrink-0 md:h-28 md:w-28 md:max-h-28 md:max-w-28'
+  } else if (size === 'medium') {
+    rootClass =
+      'block h-14 w-14 max-h-14 max-w-14 shrink-0 md:h-16 md:w-16 md:max-h-16 md:max-w-16'
+  } else {
+    rootClass = 'block h-10 w-10 max-h-10 max-w-10 shrink-0'
+  }
 
   const html = prepareSvg(themeForLightBackgrounds(raw, light), rootClass)
 
