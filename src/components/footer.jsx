@@ -19,8 +19,8 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
 
           {/* Logo */}
-          <a href="#" aria-label="DelRom home">
-            <Logo showWordmark showTagline light />
+          <a href="#" className="shrink-0" aria-label="DelRom home">
+            <Logo showWordmark showTagline light size="large" />
           </a>
 
           {/* Nav links */}

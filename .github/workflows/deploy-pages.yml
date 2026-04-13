@@ -1,5 +1,9 @@
 # Build the Vite site and deploy to GitHub Pages (use with custom domain + base: '/').
-# Repo → Settings → Pages → Build and deployment → Source: GitHub Actions
+#
+# GitHub: Repo → Settings → Pages → Build and deployment → Source MUST be "GitHub Actions".
+# If Source is "Deploy from branch" with folder "/" or "/ (root)", the site serves the repo
+# root index.html → script /src/main.jsx → browser error: MIME type "text/jsx" (not a JS module).
+# The workflow uploads ./dist only, which contains bundled /assets/*.js from `npm run build`.
 name: Deploy to GitHub Pages
 
 on:

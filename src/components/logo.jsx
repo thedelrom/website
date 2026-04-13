@@ -1,58 +1,41 @@
-export default function Logo({ showWordmark = true, showTagline = false, light = false }) {
-  const textColor = '#C17A5A'
-  const ringColor = '#C4B5A0'
-  const wordmarkColor = light ? '#FAF8F4' : '#2C2520'
+import fullLogoSvg from '@/assets/logos/delrom-logo-full.svg?raw'
+import nameOnlySvg from '@/assets/logos/delrom-logo-full-name-only.svg?raw'
+import markOnlySvg from '@/assets/logos/delrom-mark-only.svg?raw'
 
-  return (
-    <div className="flex items-center gap-3">
-      <svg
-        width="44"
-        height="44"
-        viewBox="0 0 44 44"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-        focusable="false"
-      >
-        {/* Outer ring */}
-        <circle cx="22" cy="22" r="20" stroke={ringColor} strokeWidth="1" fill="none" />
-        {/* Inner ring at 84% radius = 16.8 */}
-        <circle cx="22" cy="22" r="16.8" stroke={ringColor} strokeWidth="0.5" strokeOpacity="0.5" fill="none" />
-        {/* DR monogram */}
-        <text
-          x="22"
-          y="27"
-          textAnchor="middle"
-          fontFamily="Cormorant Garamond, Georgia, serif"
-          fontWeight="300"
-          fontSize="14"
-          fill={textColor}
-          letterSpacing="1"
-        >
-          DR
-        </text>
-      </svg>
+const FILL_ON_LIGHT_BG = '#2C2520'
+const FILL_ON_DARK_BG = '#FAF8F4'
 
-      {(showWordmark || showTagline) && (
-        <div className="flex flex-col leading-none">
-          {showWordmark && (
-            <span
-              className="font-serif font-light tracking-widest uppercase text-sm"
-              style={{ color: wordmarkColor }}
-            >
-              DELROM
-            </span>
-          )}
-          {showTagline && (
-            <span
-              className="font-sans font-light tracking-widest uppercase mt-1"
-              style={{ fontSize: '0.55rem', color: textColor }}
-            >
-              CURATED STAYS · PUERTO RICO
-            </span>
-          )}
-        </div>
-      )}
-    </div>
-  )
+function themeForLightBackgrounds(svg, light) {
+  if (!light) return svg
+  return svg.replaceAll(FILL_ON_LIGHT_BG, FILL_ON_DARK_BG)
+}
+
+function prepareSvg(svg, rootClass) {
+  return svg.replace(/<svg\b([^>]*)>/, (_, attrs) => {
+    const cleaned = attrs
+      .replace(/\s+width="[^"]*"/g, '')
+      .replace(/\s+height="[^"]*"/g, '')
+      .trim()
+    const spacer = cleaned ? ' ' : ''
+    return `<svg class="${rootClass}" aria-hidden="true" focusable="false"${spacer}${cleaned}>`
+  })
+}
+
+export default function Logo({ showWordmark = true, showTagline = false, light = false, size = 'default' }) {
+  let raw = markOnlySvg
+  if (showWordmark && showTagline) raw = fullLogoSvg
+  else if (showWordmark) raw = nameOnlySvg
+
+  const isLarge = size === 'large'
+  const rootClass = showWordmark
+    ? isLarge
+      ? 'block h-24 w-auto max-h-24 max-w-[min(100%,22rem)] md:h-28 md:max-h-28 md:max-w-none'
+      : 'block h-10 w-auto max-h-10'
+    : isLarge
+      ? 'block h-24 w-24 max-h-24 max-w-24 shrink-0 md:h-28 md:w-28 md:max-h-28 md:max-w-28'
+      : 'block h-10 w-10 max-h-10 max-w-10 shrink-0'
+
+  const html = prepareSvg(themeForLightBackgrounds(raw, light), rootClass)
+
+  return <div className="flex items-center" dangerouslySetInnerHTML={{ __html: html }} />
 }
