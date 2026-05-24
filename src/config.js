@@ -37,6 +37,9 @@ export function getBookingDestination() {
 
 export const EMAIL = 'info@thedelrom.com'
 
+/** Google Analytics 4 measurement ID (also in index.html gtag snippet). */
+export const GA_MEASUREMENT_ID = 'G-C2FJN705N0'
+
 // --- Map (Location section) -------------------------------------------------
 // DelRom map: minimal, no street labels, brand colors (warmWhite / sand / terracotta pin).
 //
