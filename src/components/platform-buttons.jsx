@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { trackPlatformClick } from '@/analytics.js'
 
 /**
  * Generic data-driven platform link list.
@@ -34,6 +35,7 @@ export default function PlatformButtons({ platforms, i18nPrefix, buttonClassName
                 rel="noopener noreferrer"
                 aria-label={t(`${i18nPrefix}.platformAria`, { platform: name })}
                 className={buttonClassName}
+                onClick={() => trackPlatformClick(i18nPrefix, platform.id)}
               >
                 {name}
               </a>

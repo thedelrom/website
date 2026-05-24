@@ -5,17 +5,13 @@ import Home from '@/pages/home.jsx'
 import Review from '@/pages/review.jsx'
 import Book from '@/pages/book.jsx'
 
-import { GA_MEASUREMENT_ID } from '@/config.js'
+import { trackPageView } from '@/analytics.js'
 
 function ScrollToTop() {
   const { pathname, search } = useLocation()
   useEffect(() => {
     window.scrollTo(0, 0)
-    if (GA_MEASUREMENT_ID && typeof window.gtag === 'function') {
-      window.gtag('config', GA_MEASUREMENT_ID, {
-        page_path: pathname + search,
-      })
-    }
+    trackPageView(pathname + search)
   }, [pathname, search])
   return null
 }
