@@ -5,6 +5,8 @@ const photos = [
   { src: '/images/photo2.jpeg', altKey: 'gallery.photo2Alt' },
   { src: '/images/photo3.jpeg', altKey: 'gallery.photo3Alt' },
   { src: '/images/photo4.jpeg', altKey: 'gallery.photo4Alt' },
+  { src: '/images/photo5.jpeg', altKey: 'gallery.photo5Alt' },
+  { src: '/images/photo6.jpeg', altKey: 'gallery.photo6Alt' },
 ]
 
 export default function Gallery() {

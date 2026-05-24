@@ -40,7 +40,9 @@
     "photo1Alt": "Sala de estar de DelRom",
     "photo2Alt": "Dormitorio de DelRom",
     "photo3Alt": "Cocina de DelRom",
-    "photo4Alt": "Comedor y detalles de DelRom"
+    "photo4Alt": "Comedor y detalles de DelRom",
+    "photo5Alt": "Dormitorio de invitados de DelRom con lámparas de mesita",
+    "photo6Alt": "Baño de DelRom con lavabo sobre encimera"
   },
   "amenities": {
     "label": "03 — Amenidades",
@@ -64,6 +66,8 @@
     "description": "Estratégicamente ubicado en el vibrante barrio de Río Piedras — un centro cultural y comercial que te da acceso rápido a todo lo que San Juan tiene para ofrecer, ya sea que estés aquí por negocios o placer.",
     "mapTitle": "Mapa de ubicación de DelRom",
     "mapPlaceholder": "Mapa próximamente",
+    "mapOpenLink": "Abrir en Google Maps",
+    "mapOpenAria": "Abrir la ubicación de DelRom en Google Maps",
     "highlights": {
       "shopping": "Compras",
       "shoppingDetail": "Plaza Las Américas y mercados locales cerca",

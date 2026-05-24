@@ -38,38 +38,63 @@ export function getBookingDestination() {
 export const EMAIL = 'info@thedelrom.com'
 
 // --- Map (Location section) -------------------------------------------------
-// For a map that looks like Google Maps, use either A or B (A takes priority).
+// DelRom map: minimal, no street labels, brand colors (warmWhite / sand / terracotta pin).
 //
-// A) Maps Embed API (recommended — same UI as Google Maps, pin + styling):
-//    1. Google Cloud Console → create/select project → APIs & Services → Enable API
-//       → enable "Maps Embed API" (no charge for standard embed usage; key is still required).
-//    2. Credentials → Create credentials → API key → restrict key (HTTP referrers: your domain).
-//    3. Paste the key into GOOGLE_MAPS_EMBED_API_KEY below. MAPS_PLACE_QUERY should match your address.
+// A) Google Static Maps (recommended — clean, no labels):
+//    1. Google Cloud Console → enable "Maps Static API" (+ "Maps Embed API" optional).
+//    2. Paste API key into GOOGLE_MAPS_EMBED_API_KEY below.
+//    3. Set MAP_CENTER to your property. Static styled map is used automatically.
 //
-// B) No API key: open Google Maps at your property → Share → "Embed a map" → Copy HTML.
-//    Paste only the iframe src URL into MAPS_EMBED_SRC (replace the OpenStreetMap URL).
-//    Leave GOOGLE_MAPS_EMBED_API_KEY empty.
-//
-// Fallback: if the API key is empty, MAPS_EMBED_SRC is used (OpenStreetMap below).
+// B) No API key: paste Google Share → Embed src into MAPS_EMBED_SRC (standard Google Maps UI).
 
 export const GOOGLE_MAPS_EMBED_API_KEY = ''
 
-/** Address or place name for Embed API (used only when GOOGLE_MAPS_EMBED_API_KEY is set). */
+/** @deprecated — use MAP_CENTER + static map when API key is set */
 export const MAPS_PLACE_QUERY = ''
 
-/** Used when GOOGLE_MAPS_EMBED_API_KEY is empty (OSM, or paste Google Share → Embed src here). */
+/** Property coordinates for static map pin */
+export const MAP_CENTER = { lat: 18.397004, lng: -66.03907 }
+
+/** Opens full Google Maps when guest taps the map */
+export const MAPS_OPEN_URL =
+  'https://www.google.com/maps/place/425+C.+Soldado+Alcides+Reyes+de+Jes%C3%BAs,+San+Juan,+00923'
+
+/** Used when GOOGLE_MAPS_EMBED_API_KEY is empty (Google Share → Embed src) */
 export const MAPS_EMBED_SRC =
-  'https://www.openstreetmap.org/export/embed.html?bbox=-66.0385%2C18.3955%2C-66.0345%2C18.3985&layer=mapnik&marker=18.3969988%2C-66.0364954'
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4234.499495619105!2d-66.0390703244256!3d18.397003872936352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c03662d092733ff%3A0xb680b135e055a2e5!2s425%20C.%20Soldado%20Alcides%20Reyes%20de%20Jes%C3%BAs%2C%20San%20Juan%2C%2000923!5e1!3m2!1sen!2spr!4v1779658491443!5m2!1sen!2spr'
+
+const STATIC_MAP_STYLES = [
+  'feature:all|element:labels|visibility:off',
+  'feature:landscape|color:0xFAF8F4',
+  'feature:water|color:0xE8DDD0',
+  'feature:road|color:0xE8DDD0',
+  'feature:road.highway|color:0xC4B5A0',
+  'feature:poi|visibility:off',
+  'feature:transit|visibility:off',
+]
 
 /**
- * @returns {string} iframe src — Google Embed API when key is set, otherwise MAPS_EMBED_SRC
+ * Styled static map — no labels, DelRom palette. Requires Maps Static API + key.
+ * @returns {string} image URL, or '' when no API key
  */
-export function getMapEmbedSrc() {
+export function getStaticMapSrc(width = 640, height = 480) {
   const key = GOOGLE_MAPS_EMBED_API_KEY.trim()
-  const q = MAPS_PLACE_QUERY.trim()
-  if (key && q) {
-    const params = new URLSearchParams({ key, q, zoom: '17' })
-    return `https://www.google.com/maps/embed/v1/place?${params.toString()}`
-  }
+  if (!key) return ''
+
+  const { lat, lng } = MAP_CENTER
+  const params = new URLSearchParams({
+    center: `${lat},${lng}`,
+    zoom: '16',
+    size: `${width}x${height}`,
+    scale: '2',
+    key,
+    markers: `color:0xC17A5A|${lat},${lng}`,
+  })
+  STATIC_MAP_STYLES.forEach((style) => params.append('style', style))
+  return `https://maps.googleapis.com/maps/api/staticmap?${params.toString()}`
+}
+
+/** @returns {string} iframe src for embed fallback when static map unavailable */
+export function getMapEmbedSrc() {
   return MAPS_EMBED_SRC.trim()
 }
