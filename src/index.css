@@ -36,6 +36,14 @@
     @apply border border-current px-8 py-3 text-sm tracking-widest uppercase font-sans font-light
            hover:bg-white/10 transition-colors duration-300 inline-block;
   }
+
+  .btn-review-outline {
+    @apply w-full max-w-xs block border border-terracotta text-terracotta
+           px-6 py-4 text-sm tracking-widest uppercase font-sans font-light text-center
+           hover:bg-terracotta hover:text-warmWhite transition-colors duration-300
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+           focus-visible:outline-terracotta;
+  }
 }
 
 @keyframes fadeUp {

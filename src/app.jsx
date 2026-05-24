@@ -1,21 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import Navbar from '@/components/navbar.jsx'
-import Hero from '@/components/hero.jsx'
-import About from '@/components/about.jsx'
-import Gallery from '@/components/gallery.jsx'
-import Amenities from '@/components/amenities.jsx'
-import Location from '@/components/location.jsx'
-import Contact from '@/components/contact.jsx'
-import Footer from '@/components/footer.jsx'
+import Home from '@/pages/home.jsx'
+import Review from '@/pages/review.jsx'
 
 export default function App() {
   const { i18n } = useTranslation()
-  const skipContentLangAnim = useRef(true)
-
-  useEffect(() => {
-    skipContentLangAnim.current = false
-  }, [])
 
   useEffect(() => {
     const lang = i18n.resolvedLanguage ?? i18n.language
@@ -30,22 +20,11 @@ export default function App() {
   }, [i18n])
 
   return (
-    <>
-      <Navbar />
-      <div
-        key={i18n.language}
-        className={skipContentLangAnim.current ? '' : 'animate-i18n-swap'}
-      >
-        <main>
-          <Hero />
-          <About />
-          <Gallery />
-          <Amenities />
-          <Location />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/review" element={<Review />} />
+      </Routes>
+    </BrowserRouter>
   )
 }

@@ -90,5 +90,19 @@
     "copyright": "All rights reserved.",
     "designCredit": "Design by Nytsu",
     "designCreditAria": "Website design by Nytsu — opens in a new tab"
+  },
+  "review": {
+    "pageTitle": "Leave a Review — DelRom",
+    "heading": "Thank you for staying with us.",
+    "body": "Your experience means everything to us. We'd love to hear about your stay — it only takes a moment.",
+    "question": "How did you book your stay?",
+    "platforms": {
+      "airbnb": "Airbnb",
+      "booking": "Booking.com"
+    },
+    "platformAria": "Leave a review on {{platform}}",
+    "noPlatforms": "Review links coming soon.",
+    "langToggleAria": "Switch to Spanish",
+    "footerCopy": "DELROM"
   }
 }

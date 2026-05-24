@@ -2,6 +2,15 @@
 // These values are safe to commit — they are public-facing URLs, not secrets.
 
 export const BOOKING_URL     = 'https://www.booking.com/hotel/pr/delrom-4-beds-entire-apartment.html?chal_t=1775071525958&force_referer=https%3A%2F%2Fwww.google.com%2F'
+
+// Review hub platforms — used by the /review page.
+// Set active: true when the review link is ready. Display names come from i18n (review.platforms.*).
+export const REVIEW_PLATFORMS = [
+  { id: 'airbnb',  url: 'https://www.airbnb.com/rooms/1653978699227724936',       active: true },
+  { id: 'booking', url: 'https://www.booking.com/hotel/pr/delrom-4-beds-entire-apartment.html',   active: true },
+  // To add a new platform, append here and set active: true when ready:
+  // { id: 'vrbo', url: 'YOUR_VRBO_REVIEW_LINK', active: false },
+]
 export const EMAIL           = 'info@thedelrom.com'
 
 // --- Map (Location section) -------------------------------------------------

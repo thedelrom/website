@@ -43,6 +43,21 @@
     />
   </head>
   <body>
+    <!--
+      Restore path encoded by public/404.html when GitHub Pages serves a direct URL like /review.
+      React Router then handles the route client-side once the app boots.
+    -->
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var h = params.get('h');
+          var newUrl = p + (h ? '#' + h : '');
+          window.history.replaceState(null, '', newUrl);
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

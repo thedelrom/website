@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      GitHub Pages SPA fallback.
+      When a user navigates directly to a path like /review, GitHub Pages returns this 404.html.
+      This script encodes the URL and redirects to the root index.html, which then boots the
+      React app and lets React Router restore the original path.
+      Based on the standard technique: https://github.com/rafgraph/spa-github-pages
+    -->
+    <script>
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1).join('/') +
+        '/?p=' + encodeURIComponent(l.pathname + l.search) +
+        (l.hash ? '&h=' + encodeURIComponent(l.hash.slice(1)) : '')
+      );
+    </script>
+  </head>
+  <body></body>
+</html>

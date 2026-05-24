@@ -90,5 +90,19 @@
     "copyright": "Todos los derechos reservados.",
     "designCredit": "Diseño por Nytsu",
     "designCreditAria": "Diseño web por Nytsu — se abre en una nueva pestaña"
+  },
+  "review": {
+    "pageTitle": "Deja una Reseña — DelRom",
+    "heading": "Gracias por quedarte con nosotros.",
+    "body": "Tu experiencia significa todo para nosotros. Nos encantaría escuchar sobre tu estadía — solo toma un momento.",
+    "question": "¿Cómo reservaste tu estadía?",
+    "platforms": {
+      "airbnb": "Airbnb",
+      "booking": "Booking.com"
+    },
+    "platformAria": "Dejar una reseña en {{platform}}",
+    "noPlatforms": "Los enlaces de reseñas estarán disponibles pronto.",
+    "langToggleAria": "Cambiar a inglés",
+    "footerCopy": "DELROM"
   }
 }
