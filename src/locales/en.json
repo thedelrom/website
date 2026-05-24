@@ -12,7 +12,7 @@
     "headline": "Where every arrival",
     "headlineItalic": "feels like home.",
     "description": "A thoughtfully designed hospitality space in San Juan — blending comfort, style, and curated details for an unforgettable stay.",
-    "cta1": "Book on Booking.com",
+    "cta1": "Book Your Stay",
     "cta2": "Learn More"
   },
   "about": {
@@ -83,13 +83,29 @@
     "label": "05 — Book Your Stay",
     "headline": "Ready to experience",
     "headlineItalic": "DelRom?",
-    "description": "Book directly through Booking.com for the best rates, or reach out via email for any questions about your stay.",
-    "cta1": "Book on Booking.com"
+    "description": "Choose your preferred platform to book, or reach out via email for any questions about your stay.",
+    "cta1": "Book Your Stay"
   },
   "footer": {
     "copyright": "All rights reserved.",
     "designCredit": "Design by Nytsu",
     "designCreditAria": "Website design by Nytsu — opens in a new tab"
+  },
+  "book": {
+    "pageTitle": "Book Your Stay — DelRom",
+    "heading": "Book your stay.",
+    "body": "Choose the platform you prefer to complete your reservation.",
+    "question": "Where would you like to book?",
+    "platforms": {
+      "airbnb": "Airbnb",
+      "booking": "Booking.com"
+    },
+    "platformAria": "Book on {{platform}}",
+    "noPlatforms": "Booking links coming soon.",
+    "langToggleAria": "Switch to Spanish",
+    "backHome": "Return to DelRom homepage",
+    "backHomeLabel": "Back to home",
+    "footerCopy": "DELROM"
   },
   "review": {
     "pageTitle": "Leave a Review — DelRom",

@@ -1,17 +1,41 @@
-// Replace these before going live.
 // These values are safe to commit — they are public-facing URLs, not secrets.
 
-export const BOOKING_URL     = 'https://www.booking.com/hotel/pr/delrom-4-beds-entire-apartment.html?chal_t=1775071525958&force_referer=https%3A%2F%2Fwww.google.com%2F'
-
-// Review hub platforms — used by the /review page.
-// Set active: true when the review link is ready. Display names come from i18n (review.platforms.*).
-export const REVIEW_PLATFORMS = [
-  { id: 'airbnb',  url: 'https://www.airbnb.com/rooms/1653978699227724936',       active: true },
-  { id: 'booking', url: 'https://www.booking.com/hotel/pr/delrom-4-beds-entire-apartment.html',   active: true },
-  // To add a new platform, append here and set active: true when ready:
-  // { id: 'vrbo', url: 'YOUR_VRBO_REVIEW_LINK', active: false },
+// All booking/review platforms in one place.
+// To add a platform: append one object below and set active: true when ready.
+// bookingUrl → listing page (/book page); reviewUrl → review-request link (/review page).
+export const PLATFORMS = [
+  {
+    id: 'airbnb',
+    bookingUrl: 'https://www.airbnb.com/rooms/1653978699227724936',
+    reviewUrl:  'https://www.airbnb.com/rooms/1653978699227724936/reviews',
+    active: true,
+  },
+  {
+    id: 'booking',
+    bookingUrl: 'https://www.booking.com/hotel/pr/delrom-4-beds-entire-apartment.html',
+    reviewUrl:  'https://www.booking.com/hotel/pr/delrom-4-beds-entire-apartment.html',
+    active: true,
+  },
+  // { id: 'vrbo', bookingUrl: 'YOUR_VRBO_LISTING_LINK', reviewUrl: 'YOUR_VRBO_REVIEW_LINK', active: false },
 ]
-export const EMAIL           = 'info@thedelrom.com'
+
+// Derived arrays — shape matches what platform-buttons.jsx expects. No need to edit these.
+export const BOOKING_PLATFORMS = PLATFORMS.map((p) => ({ id: p.id, url: p.bookingUrl, active: p.active }))
+export const REVIEW_PLATFORMS  = PLATFORMS.map((p) => ({ id: p.id, url: p.reviewUrl,  active: p.active }))
+
+/**
+ * Returns where "Book Now" CTAs should send the guest.
+ * - One active platform → direct external link (no extra tap).
+ * - Two or more → route to /book hub so the guest can choose.
+ * @returns {{ type: 'external', url: string } | { type: 'hub' }}
+ */
+export function getBookingDestination() {
+  const active = BOOKING_PLATFORMS.filter((p) => p.active)
+  if (active.length === 1) return { type: 'external', url: active[0].url }
+  return { type: 'hub' }
+}
+
+export const EMAIL = 'info@thedelrom.com'
 
 // --- Map (Location section) -------------------------------------------------
 // For a map that looks like Google Maps, use either A or B (A takes priority).

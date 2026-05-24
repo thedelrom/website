@@ -1,8 +1,27 @@
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BOOKING_URL } from '@/config.js'
+import { getBookingDestination } from '@/config.js'
+
+const bookingDest = getBookingDestination()
 
 export default function Hero() {
   const { t } = useTranslation()
+
+  const BookCta = () =>
+    bookingDest.type === 'hub' ? (
+      <Link to="/book" className="btn-primary">
+        {t('hero.cta1')}
+      </Link>
+    ) : (
+      <a
+        href={bookingDest.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-primary"
+      >
+        {t('hero.cta1')}
+      </a>
+    )
 
   return (
     <section
@@ -35,14 +54,7 @@ export default function Hero() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up-delay-2">
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-          >
-            {t('hero.cta1')}
-          </a>
+          <BookCta />
           <a
             href="#about"
             className="btn-outline text-warmWhite"

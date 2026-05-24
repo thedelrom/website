@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Logo from '@/components/logo.jsx'
-import { BOOKING_URL } from '@/config.js'
+import { getBookingDestination } from '@/config.js'
+
+const bookingDest = getBookingDestination()
 
 export default function Navbar() {
   const { t, i18n } = useTranslation()
@@ -45,6 +48,23 @@ export default function Navbar() {
     i18n.changeLanguage(isSpanish ? 'en' : 'es')
   }
 
+  const BookButton = ({ className, onClick }) =>
+    bookingDest.type === 'hub' ? (
+      <Link to="/book" className={className} onClick={onClick}>
+        {t('nav.bookNow')}
+      </Link>
+    ) : (
+      <a
+        href={bookingDest.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        onClick={onClick}
+      >
+        {t('nav.bookNow')}
+      </a>
+    )
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled_classes}`}
@@ -74,14 +94,7 @@ export default function Navbar() {
           >
             {isSpanish ? 'EN' : 'ES'}
           </button>
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary text-xs"
-          >
-            {t('nav.bookNow')}
-          </a>
+          <BookButton className="btn-primary text-xs" />
         </nav>
 
         {/* Mobile controls */}
@@ -126,15 +139,10 @@ export default function Navbar() {
               {label}
             </a>
           ))}
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setMenuOpen(false)}
+          <BookButton
             className="btn-primary text-xs self-start"
-          >
-            {t('nav.bookNow')}
-          </a>
+            onClick={() => setMenuOpen(false)}
+          />
         </nav>
       </div>
     </header>

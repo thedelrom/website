@@ -12,7 +12,7 @@
     "headline": "Donde cada llegada",
     "headlineItalic": "se siente como hogar.",
     "description": "Un espacio de hospitalidad cuidadosamente diseñado en San Juan — combinando comodidad, estilo y detalles curados para una estadía inolvidable.",
-    "cta1": "Reservar en Booking.com",
+    "cta1": "Reserva Tu Estadía",
     "cta2": "Saber Más"
   },
   "about": {
@@ -83,13 +83,29 @@
     "label": "05 — Reserva Tu Estadía",
     "headline": "¿Listo para experimentar",
     "headlineItalic": "DelRom?",
-    "description": "Reserva directamente en Booking.com para las mejores tarifas, o contáctanos por correo electrónico con cualquier pregunta sobre tu estadía.",
-    "cta1": "Reservar en Booking.com"
+    "description": "Elige tu plataforma preferida para reservar, o escríbenos con cualquier pregunta sobre tu estadía.",
+    "cta1": "Reserva Tu Estadía"
   },
   "footer": {
     "copyright": "Todos los derechos reservados.",
     "designCredit": "Diseño por Nytsu",
     "designCreditAria": "Diseño web por Nytsu — se abre en una nueva pestaña"
+  },
+  "book": {
+    "pageTitle": "Reserva Tu Estadía — DelRom",
+    "heading": "Reserva tu estadía.",
+    "body": "Elige la plataforma que prefieras para completar tu reservación.",
+    "question": "¿Dónde te gustaría reservar?",
+    "platforms": {
+      "airbnb": "Airbnb",
+      "booking": "Booking.com"
+    },
+    "platformAria": "Reservar en {{platform}}",
+    "noPlatforms": "Los enlaces de reserva estarán disponibles pronto.",
+    "langToggleAria": "Cambiar a inglés",
+    "backHome": "Volver a la página principal de DelRom",
+    "backHomeLabel": "Volver al inicio",
+    "footerCopy": "DELROM"
   },
   "review": {
     "pageTitle": "Deja una Reseña — DelRom",

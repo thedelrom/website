@@ -1,8 +1,30 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Home from '@/pages/home.jsx'
 import Review from '@/pages/review.jsx'
+import Book from '@/pages/book.jsx'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
+
+function AnimatedRoutes() {
+  const location = useLocation()
+  return (
+    <div key={location.pathname} className="animate-page-enter">
+      <Routes location={location}>
+        <Route path="/" element={<Home />} />
+        <Route path="/book" element={<Book />} />
+        <Route path="/review" element={<Review />} />
+      </Routes>
+    </div>
+  )
+}
 
 export default function App() {
   const { i18n } = useTranslation()
@@ -21,10 +43,8 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/review" element={<Review />} />
-      </Routes>
+      <ScrollToTop />
+      <AnimatedRoutes />
     </BrowserRouter>
   )
 }

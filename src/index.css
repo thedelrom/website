@@ -44,6 +44,14 @@
            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
            focus-visible:outline-terracotta;
   }
+
+  .btn-book-outline {
+    @apply w-full max-w-xs block border border-terracotta text-terracotta
+           px-6 py-4 text-sm tracking-widest uppercase font-sans font-light text-center
+           hover:bg-terracotta hover:text-warmWhite transition-colors duration-300
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+           focus-visible:outline-terracotta;
+  }
 }
 
 @keyframes fadeUp {
@@ -67,6 +75,28 @@
 
 .animate-fade-up-delay-2 {
   animation: fadeUp 0.9s 0.5s ease both;
+}
+
+/* Page route enter transition */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-page-enter {
+    animation: none;
+  }
 }
 
 /* Language switch: main + footer (skipped on first paint) */

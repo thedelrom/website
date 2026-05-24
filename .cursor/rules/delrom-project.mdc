@@ -13,18 +13,25 @@ alwaysApply: true
 
 ```jsx
 // Good
-import { BOOKING_URL } from '@/config.js'
+import { getBookingDestination } from '@/config.js'
 import Logo from '@/components/logo.jsx'
 
 // Avoid
-import { BOOKING_URL } from '../config.js'
+import { getBookingDestination } from '../config.js'
 ```
 
 ## Stack
 
-- React 18, Vite, Tailwind CSS v3. Static site only; no backend.
+- React 18, Vite, React Router, Tailwind CSS v3. Static site only; no backend.
 - Functional components and hooks. Prefer controlled form inputs when adding forms.
 - Icons: `lucide-react` (thin stroke, architectural) for list UI; `text-taupe` / `strokeWidth` ~1.2–1.25 to match Amenities-style SVGs.
+
+## Routes
+
+- `/` — homepage ([`src/pages/home.jsx`](src/pages/home.jsx))
+- `/book` — public booking hub (platform choice); homepage CTAs use `getBookingDestination()` → `/book` or direct listing URL
+- `/review` — QR-only review hub; `noindex, nofollow`; not in sitemap
+- Router shell: [`src/app.jsx`](src/app.jsx). Direct URL loads on GitHub Pages: [`public/404.html`](public/404.html) + redirect in [`index.html`](index.html).
 
 ## Tailwind and layout
 
@@ -41,7 +48,11 @@ import { BOOKING_URL } from '../config.js'
 
 ## Content and config
 
-- Public URLs and contact info live in `src/config.js` (`BOOKING_URL`, `EMAIL`, map: `getMapEmbedSrc()` — optional `GOOGLE_MAPS_EMBED_API_KEY` + `MAPS_PLACE_QUERY`, or `MAPS_EMBED_SRC` for Share → Embed / OSM).
+- Public URLs and contact info live in `src/config.js`:
+  - **`PLATFORMS`** — one object per platform (`id`, `bookingUrl`, `reviewUrl`, `active`); drives `/book` and `/review`
+  - **`getBookingDestination()`** — homepage “Book Now” CTAs: hub (`/book`) when 2+ active platforms, else direct listing URL
+  - **`EMAIL`**, map: `getMapEmbedSrc()` — optional `GOOGLE_MAPS_EMBED_API_KEY` + `MAPS_PLACE_QUERY`, or `MAPS_EMBED_SRC` for Share → Embed / OSM
+- Platform display names: i18n keys `book.platforms.*` and `review.platforms.*` in locale files
 - Images live under `public/images/`; reference as `/images/...` in markup/CSS.
 
 ## Deployment

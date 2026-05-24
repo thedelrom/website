@@ -1,8 +1,27 @@
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BOOKING_URL, EMAIL } from '@/config.js'
+import { EMAIL, getBookingDestination } from '@/config.js'
+
+const bookingDest = getBookingDestination()
 
 export default function Contact() {
   const { t } = useTranslation()
+
+  const BookCta = () =>
+    bookingDest.type === 'hub' ? (
+      <Link to="/book" className="btn-primary">
+        {t('contact.cta1')}
+      </Link>
+    ) : (
+      <a
+        href={bookingDest.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-primary"
+      >
+        {t('contact.cta1')}
+      </a>
+    )
 
   return (
     <section id="contact" className="bg-sand py-24 lg:py-32">
@@ -18,14 +37,7 @@ export default function Contact() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-          >
-            {t('contact.cta1')}
-          </a>
+          <BookCta />
         </div>
 
         <a
