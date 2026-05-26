@@ -42,7 +42,9 @@
     "photo3Alt": "DelRom kitchen",
     "photo4Alt": "DelRom dining and detail",
     "photo5Alt": "DelRom guest bedroom with bedside lamps",
-    "photo6Alt": "DelRom bathroom with vessel sink"
+    "photo6Alt": "DelRom bathroom with vessel sink",
+    "photo7Alt": "DelRom front of house"
+
   },
   "amenities": {
     "label": "03 — Amenities",
