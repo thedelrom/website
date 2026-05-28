@@ -84,6 +84,13 @@
       "airportDetail": "Luis Muñoz Marín ~20 min de distancia"
     }
   },
+  "testimonials": {
+    "label": "04 — Testimonios de Huéspedes",
+    "headline": "Amado",
+    "headlineItalic": "por nuestros huéspedes.",
+    "review1": "Reservé este lugar último momento (el mismo día) y tengo que decir que fue el mejor lugar donde nos hospedamos (de 6 lugares durante nuestra estadía de 11 días en PR). El estacionamiento era extremadamente conveniente, a pasos de distancia (tal como se describe). ¡La ubicación definitivamente fue la más tranquila también! Los colchones fueron extremadamente cómodos, las sábanas y toallas estaban impecables. Los pequeños detalles y el cuidado son notables desde los snacks, agua fría en la nevera, productos femeninos, café, té, detergente para la ropa y suavizante fue un gran +... Quisimos y pedimos si podíamos extender nuestra estadía, pero ya estaba reservado. ¡Anfitrión excelente - ¡ALTAMENTE RECOMENDADO!",
+    "review2": "Limpio, conveniente, mucho espacio, 4 televisores, aire acondicionado... perfecto para el último día en Puerto Rico... ¡10 minutos del aeropuerto!"
+  },
   "contact": {
     "label": "05 — Reserva Tu Estadía",
     "headline": "¿Listo para experimentar",

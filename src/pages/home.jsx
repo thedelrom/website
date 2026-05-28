@@ -4,6 +4,7 @@ import Navbar from '@/components/navbar.jsx'
 import Hero from '@/components/hero.jsx'
 import About from '@/components/about.jsx'
 import Gallery from '@/components/gallery.jsx'
+import Testimonials from '@/components/testimonials.jsx'
 import Amenities from '@/components/amenities.jsx'
 import Location from '@/components/location.jsx'
 import Contact from '@/components/contact.jsx'
@@ -28,6 +29,7 @@ export default function Home() {
           <Hero />
           <About />
           <Gallery />
+          <Testimonials />
           <Amenities />
           <Location />
           <Contact />

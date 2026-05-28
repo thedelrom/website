@@ -37,6 +37,29 @@ export function getBookingDestination() {
 
 export const EMAIL = 'info@thedelrom.com'
 
+// Testimonials from booking platforms
+export const TESTIMONIALS = [
+  {
+    id: 1,
+    author: 'Maribel',
+    location: 'Phoenix, Arizona',
+    platform: 'airbnb',
+    rating: 5,
+    text: 'testimonials.review1',
+    date: '2024-05-20',
+  },
+  {
+    id: 2,
+    author: 'Dennis',
+    location: 'United States',
+    platform: 'booking',
+    rating: 10,
+    text: 'testimonials.review2',
+    date: '2024-05-15',
+  },
+  // Add more testimonials as needed — just append to this array
+]
+
 /** Google Analytics 4 measurement ID (also in index.html gtag snippet). */
 export const GA_MEASUREMENT_ID = 'G-C2FJN705N0'
 
