@@ -89,7 +89,8 @@
     "headline": "Amado",
     "headlineItalic": "por nuestros huéspedes.",
     "review1": "Reservé este lugar último momento (el mismo día) y tengo que decir que fue el mejor lugar donde nos hospedamos (de 6 lugares durante nuestra estadía de 11 días en PR). El estacionamiento era extremadamente conveniente, a pasos de distancia (tal como se describe). ¡La ubicación definitivamente fue la más tranquila también! Los colchones fueron extremadamente cómodos, las sábanas y toallas estaban impecables. Los pequeños detalles y el cuidado son notables desde los snacks, agua fría en la nevera, productos femeninos, café, té, detergente para la ropa y suavizante fue un gran +... Quisimos y pedimos si podíamos extender nuestra estadía, pero ya estaba reservado. ¡Anfitrión excelente - ¡ALTAMENTE RECOMENDADO!",
-    "review2": "Limpio, conveniente, mucho espacio, 4 televisores, aire acondicionado... perfecto para el último día en Puerto Rico... ¡10 minutos del aeropuerto!"
+    "review2": "Limpio, conveniente, mucho espacio, 4 televisores, aire acondicionado... perfecto para el último día en Puerto Rico... ¡10 minutos del aeropuerto!",
+    "review3": "Todo fue perfecto. Un espacio impecable y acogedor en un ambiente tranquilo. Altamente recomendado para una estadía cómoda y agradable."
   },
   "contact": {
     "label": "05 — Reserva Tu Estadía",
@@ -110,7 +111,8 @@
     "question": "¿Dónde te gustaría reservar?",
     "platforms": {
       "airbnb": "Airbnb",
-      "booking": "Booking.com"
+      "booking": "Booking.com",
+      "vrbo": "VRBO"
     },
     "platformAria": "Reservar en {{platform}}",
     "noPlatforms": "Los enlaces de reserva estarán disponibles pronto.",
@@ -126,11 +128,38 @@
     "question": "¿Cómo reservaste tu estadía?",
     "platforms": {
       "airbnb": "Airbnb",
-      "booking": "Booking.com"
+      "booking": "Booking.com",
+      "vrbo": "VRBO"
     },
     "platformAria": "Dejar una reseña en {{platform}}",
     "noPlatforms": "Los enlaces de reseñas estarán disponibles pronto.",
     "langToggleAria": "Cambiar a inglés",
     "footerCopy": "DELROM"
+  },
+  "explore": {
+    "pageTitle": "Explora Cercano — DelRom",
+    "loading": "Cargando mapa…",
+    "searchPlaceholder": "Buscar lugares…",
+    "getDirections": "Obtener Direcciones",
+    "callLabel": "Llamar",
+    "websiteLabel": "Sitio Web",
+    "myLocation": "Mi Ubicación",
+    "hoursLabel": "Horario",
+    "distanceAway": "{{distance}} de distancia",
+    "hostPick": "Recomendado",
+    "openNow": "Abierto Ahora",
+    "closed": "Cerrado",
+    "backHome": "thedelrom.com",
+    "langToggleAria": "Cambiar a inglés",
+    "categories": {
+      "all": "Todos",
+      "dining": "Gastronomía",
+      "beaches": "Playas",
+      "shopping": "Compras",
+      "attractions": "Atracciones",
+      "nightlife": "Vida Nocturna",
+      "emergency": "Emergencias",
+      "transit": "Transporte"
+    }
   }
 }

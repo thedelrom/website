@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Home from '@/pages/home.jsx'
 import Review from '@/pages/review.jsx'
 import Book from '@/pages/book.jsx'
+import Explore from '@/pages/explore.jsx'
 
 import { trackPageView } from '@/analytics.js'
 
@@ -24,6 +25,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/book" element={<Book />} />
         <Route path="/review" element={<Review />} />
+        <Route path="/explore" element={<Explore />} />
       </Routes>
     </div>
   )

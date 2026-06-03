@@ -90,7 +90,8 @@
     "headline": "Loved",
     "headlineItalic": "by our guests.",
     "review1": "Booked this place last minute (same day) and I have to say, this was the absolute best place we stayed at (out of 6 places during our 11 day stay in PR). Parking was extremely convenient, steps away (as described). Location was definitely the quietest too! Mattresses were extremely comfortable, linenes and towels were pristine. The little details and care is noticable from the snacks, cold water in the fridge, feminine products, coffee, tea, laundry detergent & softener was a huge +... We wished and asked if we could extend our stay, but it was booked already. Excellent host - HIGHLY RECOMMENDED!",
-    "review2": "Clean, convenient, lots of room, 4 TVs, AC... perfect for last day in Puerto Rico... 10 min. from airport!"
+    "review2": "Clean, convenient, lots of room, 4 TVs, AC... perfect for last day in Puerto Rico... 10 min. from airport!",
+    "review3": "Everything was perfect. An impeccable, cozy space in a quiet setting. Highly recommended for a comfortable and pleasant stay."
   },
   "contact": {
     "label": "05 — Book Your Stay",
@@ -111,7 +112,8 @@
     "question": "Where would you like to book?",
     "platforms": {
       "airbnb": "Airbnb",
-      "booking": "Booking.com"
+      "booking": "Booking.com",
+      "vrbo": "VRBO"
     },
     "platformAria": "Book on {{platform}}",
     "noPlatforms": "Booking links coming soon.",
@@ -127,11 +129,38 @@
     "question": "How did you book your stay?",
     "platforms": {
       "airbnb": "Airbnb",
-      "booking": "Booking.com"
+      "booking": "Booking.com",
+      "vrbo": "VRBO"
     },
     "platformAria": "Leave a review on {{platform}}",
     "noPlatforms": "Review links coming soon.",
     "langToggleAria": "Switch to Spanish",
     "footerCopy": "DELROM"
+  },
+  "explore": {
+    "pageTitle": "Explore Nearby — DelRom",
+    "loading": "Loading map…",
+    "searchPlaceholder": "Search places…",
+    "getDirections": "Get Directions",
+    "callLabel": "Call",
+    "websiteLabel": "Website",
+    "myLocation": "My Location",
+    "hoursLabel": "Hours",
+    "distanceAway": "{{distance}} away",
+    "hostPick": "Host Pick",
+    "openNow": "Open Now",
+    "closed": "Closed",
+    "backHome": "thedelrom.com",
+    "langToggleAria": "Switch to Spanish",
+    "categories": {
+      "all": "All",
+      "dining": "Dining",
+      "beaches": "Beaches",
+      "shopping": "Shopping",
+      "attractions": "Attractions",
+      "nightlife": "Nightlife",
+      "emergency": "Emergency",
+      "transit": "Transit"
+    }
   }
 }
