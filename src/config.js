@@ -267,7 +267,7 @@ export const NEARBY_LOCATIONS = [
   },
   // --- Beaches ---------------------------------------------------------------
   {
-    id: 5,
+    id: 8,
     name: 'Ocean Park Beach',
     category: 'beaches',
     featured: true,
@@ -281,7 +281,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/search/Ocean+Park+Beach+San+Juan+Puerto+Rico',
   },
   {
-    id: 6,
+    id: 9,
     name: 'Escambrón Beach',
     category: 'beaches',
     featured: false,
@@ -295,7 +295,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/search/Escambrón+Beach+San+Juan+Puerto+Rico',
   },
   {
-    id: 7,
+    id: 10,
     name: 'Isla Verde Beach',
     category: 'beaches',
     featured: false,
@@ -310,7 +310,7 @@ export const NEARBY_LOCATIONS = [
   },
   // --- Shopping --------------------------------------------------------------
   {
-    id: 8,
+    id: 11,
     name: '65 de Infantería Shopping Center',
     category: 'shopping',
     featured: true,
@@ -324,7 +324,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/65+de+Infanter%C3%ADa+Shopping+Center/@18.3955231,-66.0415209',
   },
   {
-    id: 9,
+    id: 12,
     name: 'Banco Popular Shopping',
     category: 'shopping',
     featured: false,
@@ -338,7 +338,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Banco+Popular/@18.395497,-66.041157',
   },
   {
-    id: 10,
+    id: 13,
     name: 'Plaza Las Américas',
     category: 'shopping',
     featured: false,
@@ -352,7 +352,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/search/Plaza+Las+Americas+San+Juan+Puerto+Rico',
   },
   {
-    id: 11,
+    id: 14,
     name: 'Mercado de Río Piedras',
     category: 'shopping',
     featured: false,
@@ -367,7 +367,7 @@ export const NEARBY_LOCATIONS = [
   },
   // --- Attractions -----------------------------------------------------------
   {
-    id: 12,
+    id: 15,
     name: 'Old San Juan',
     category: 'attractions',
     featured: false,
@@ -381,7 +381,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/search/Old+San+Juan+Puerto+Rico',
   },
   {
-    id: 13,
+    id: 16,
     name: 'Castillo San Felipe del Morro',
     category: 'attractions',
     featured: false,
@@ -396,7 +396,7 @@ export const NEARBY_LOCATIONS = [
   },
   // --- Nightlife -------------------------------------------------------------
   {
-    id: 14,
+    id: 17,
     name: 'La Factoría',
     category: 'nightlife',
     featured: true,
@@ -410,7 +410,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/search/La+Factoria+Old+San+Juan+Puerto+Rico',
   },
   {
-    id: 15,
+    id: 18,
     name: 'Calle Loíza',
     category: 'nightlife',
     featured: false,
@@ -427,7 +427,7 @@ export const NEARBY_LOCATIONS = [
   // --- Emergency -------------------------------------------------------------
   // ⚠️  Verify these coordinates on Google Maps before going live
   {
-    id: 16,
+    id: 19,
     name: 'Hospital San Francisco',
     category: 'emergency',
     featured: true,
@@ -441,7 +441,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Hospital+San+Francisco/@18.3987918,-66.038981',
   },
   {
-    id: 17,
+    id: 20,
     name: 'Policía de Puerto Rico – Monte Hatillo',
     category: 'emergency',
     featured: false,
@@ -455,7 +455,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Polic%C3%ADa+de+Puerto+Rico+-+Precinto+Monte+Hatillo/@18.3951455,-66.0353195',
   },
   {
-    id: 18,
+    id: 21,
     name: 'Bomberos – Estación Río Piedras',
     category: 'emergency',
     featured: false,
@@ -472,7 +472,7 @@ export const NEARBY_LOCATIONS = [
   // --- Transit ---------------------------------------------------------------
   // Mix of verified (Google Maps) and approximate coordinates.
   {
-    id: 19,
+    id: 22,
     name: 'Tren Urbano – Río Piedras',
     category: 'transit',
     featured: true,
@@ -486,7 +486,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/R%C3%ADo+Piedras/@18.39962,-66.05214',
   },
   {
-    id: 20,
+    id: 23,
     name: 'Tren Urbano – UPR',
     category: 'transit',
     featured: false,
@@ -500,7 +500,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Universidad/@18.4058,-66.05171',
   },
   {
-    id: 21,
+    id: 24,
     name: 'Tren Urbano – Centro Médico',
     category: 'transit',
     featured: false,
@@ -514,7 +514,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Medical+Center/@18.39152,-66.07489',
   },
   {
-    id: 22,
+    id: 25,
     name: 'Tren Urbano – Cupey',
     category: 'transit',
     featured: false,
@@ -528,7 +528,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Cupey/@18.3905086,-66.0631271',
   },
   {
-    id: 23,
+    id: 26,
     name: 'Tren Urbano – Las Lomas',
     category: 'transit',
     featured: false,
@@ -542,7 +542,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Las+Lomas/@18.39079,-66.09389',
   },
   {
-    id: 24,
+    id: 27,
     name: 'Tren Urbano – Hato Rey',
     category: 'transit',
     featured: false,
@@ -556,7 +556,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Hato+Rey/@18.42944,-66.06023',
   },
   {
-    id: 25,
+    id: 28,
     name: 'Tren Urbano – Roosevelt',
     category: 'transit',
     featured: false,
@@ -570,7 +570,7 @@ export const NEARBY_LOCATIONS = [
     googleMapsUrl: 'https://www.google.com/maps/place/Roosevelt/@18.4235097,-66.0588799',
   },
   {
-    id: 26,
+    id: 29,
     name: 'Tren Urbano – Sagrado Corazón',
     category: 'transit',
     featured: false,
