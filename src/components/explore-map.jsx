@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { useTranslation } from 'react-i18next'
 import maplibregl from 'maplibre-gl'
 import {
   X, Phone, Globe, LocateFixed,
   LayoutGrid, UtensilsCrossed, Waves, ShoppingBag, Landmark, Music2, Star,
-  ShieldAlert, Train,
+  ShieldAlert, Train, Film, Trophy, Ticket, Package, Trees, Frame,
+  MapPin, Droplet, Pill, Fuel, Plane, HeartPulse, ShieldCheck, Flame, Banknote,
 } from 'lucide-react'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { MAP_CENTER, NEARBY_LOCATIONS, TREN_URBANO_STATIONS } from '@/config.js'
+import { MAP_CENTER, MAPS_OPEN_URL, NEARBY_LOCATIONS, TREN_URBANO_STATIONS } from '@/config.js'
 import delromMarkRaw from '@/assets/logos/delrom-mark-only.svg?raw'
 
 const CATEGORY_COLORS = {
@@ -18,6 +20,23 @@ const CATEGORY_COLORS = {
   nightlife:   '#6B5AAB',
   emergency:   '#C94040',
   transit:     '#3D6FA5',
+  property:    '#2C2520',
+}
+
+const PROPERTY_LOCATION = {
+  id: 'property',
+  name: 'DelRom',
+  category: 'property',
+  type: 'property',
+  featured: false,
+  lat: MAP_CENTER.lat,
+  lng: MAP_CENTER.lng,
+  distance: '0 m',
+  photo: null,
+  hours: null,
+  phone: null,
+  website: 'https://thedelrom.com',
+  googleMapsUrl: MAPS_OPEN_URL,
 }
 
 const CATEGORY_ICONS = {
@@ -34,63 +53,57 @@ const CATEGORY_ICONS = {
 const PROPERTY_COLOR = '#2C2520'
 const CATEGORIES = ['all', 'dining', 'beaches', 'shopping', 'attractions', 'nightlife', 'emergency', 'transit']
 
-// Raw Lucide icon nodes per category (extracted from lucide-react v1.7.0)
-const CATEGORY_ICON_NODES = {
-  dining: [
-    ['path', { d: 'm16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8' }],
-    ['path', { d: 'M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7' }],
-    ['path', { d: 'm2.1 21.8 6.4-6.3' }],
-    ['path', { d: 'm19 5-7 7' }],
-  ],
-  beaches: [
-    ['path', { d: 'M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1' }],
-    ['path', { d: 'M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1' }],
-    ['path', { d: 'M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1' }],
-  ],
-  shopping: [
-    ['path', { d: 'M16 10a4 4 0 0 1-8 0' }],
-    ['path', { d: 'M3.103 6.034h17.794' }],
-    ['path', { d: 'M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z' }],
-  ],
-  attractions: [
-    ['path', { d: 'M10 18v-7' }],
-    ['path', { d: 'M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z' }],
-    ['path', { d: 'M14 18v-7' }],
-    ['path', { d: 'M18 18v-7' }],
-    ['path', { d: 'M3 22h18' }],
-    ['path', { d: 'M6 18v-7' }],
-  ],
-  nightlife: [
-    ['circle', { cx: '8', cy: '18', r: '4' }],
-    ['path', { d: 'M12 18V2l7 4' }],
-  ],
-  emergency: [
-    ['path', { d: 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z' }],
-    ['path', { d: 'M12 8v4' }],
-    ['path', { d: 'M12 16h.01' }],
-  ],
-  transit: [
-    ['rect', { width: '16', height: '16', x: '4', y: '3', rx: '2' }],
-    ['path', { d: 'M4 11h16' }],
-    ['path', { d: 'M12 3v8' }],
-    ['path', { d: 'm8 19-2 3' }],
-    ['path', { d: 'm18 22-2-3' }],
-    ['path', { d: 'M8 15h.01' }],
-    ['path', { d: 'M16 15h.01' }],
-  ],
+// Map location types/subtypes to Lucide icon components
+const TYPE_ICON_MAP = {
+  // Dining
+  dining: UtensilsCrossed,
+  // Beaches
+  beach: Waves,
+  // Shopping
+  shopping: ShoppingBag,
+  gas: Fuel,
+  pharmacy: Pill,
+  bank: Banknote,
+  postal: ShoppingBag,
+  // Attractions
+  attraction: Landmark,
+  park: Trees,
+  museum: Frame,
+  cinema: Film,
+  stadium: Trophy,
+  venue: Ticket,
+  market: Package,
+  landmark: Landmark,
+  'historical-site': MapPin,
+  'botanical-garden': Trees,
+  'water-park': Droplet,
+  sports: Trophy,
+  // Nightlife
+  nightlife: Music2,
+  // Emergency
+  hospital: HeartPulse,
+  police: ShieldCheck,
+  'fire-station': Flame,
+  // Transit
+  'train-station': Train,
+  airport: Plane,
 }
 
-function iconNodesToSvg(nodes) {
-  return nodes.map(([tag, attrs]) => {
-    const attrStr = Object.entries(attrs)
-      .filter(([k]) => k !== 'key')
-      .map(([k, v]) => `${k}="${v}"`)
-      .join(' ')
-    return `<${tag} ${attrStr}/>`
-  }).join('')
+const _iconSvgCache = new Map()
+function getLucideIconSvg(IconComponent) {
+  if (_iconSvgCache.has(IconComponent)) return _iconSvgCache.get(IconComponent)
+  try {
+    const markup = renderToStaticMarkup(<IconComponent size={24} strokeWidth={1.5} color="white" />)
+    const inner = markup.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')
+    _iconSvgCache.set(IconComponent, inner)
+    return inner
+  } catch (e) {
+    console.warn('getLucideIconSvg error:', e)
+    return ''
+  }
 }
 // Height of the card strip — used to push the info card above it on mobile
-const STRIP_HEIGHT = 116
+const DRAWER_HEIGHT = 220 // mobile bottom drawer height
 
 function getOpenStatus(hours) {
   if (!hours) return null
@@ -136,13 +149,18 @@ export default function ExploreMap({ onMapLoaded }) {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchQuery,      setSearchQuery]      = useState('')
   const [userLocation,     setUserLocation]     = useState(null)
+  const [hoveredId,        setHoveredId]        = useState(null)
+  const rowRefsRef   = useRef({})
+  const hoverFromPin = useRef(false)
   // Increments each time a new map instance finishes loading.
   // Using a counter (not a boolean) ensures the markers effect always re-runs
   // even in React Strict Mode, where effects are intentionally run twice and
   // state is not reset between invocations.
   const [mapLoadCount,     setMapLoadCount]     = useState(0)
 
-  const stripVisible = selectedCategory !== 'all'
+  const panelVisible = true // desktop panel always visible
+  const drawerVisible = selectedCategory !== 'all' || searchQuery !== '' // mobile drawer only when filtering
+  const stripVisible = drawerVisible
 
   const categoryCounts = useMemo(() => {
     const counts = {}
@@ -168,6 +186,13 @@ export default function ExploreMap({ onMapLoaded }) {
   useEffect(() => {
     setActiveLocation(null)
   }, [selectedCategory])
+
+  // Scroll panel to hovered row when hover originates from a pin
+  useEffect(() => {
+    if (hoveredId !== null && hoverFromPin.current) {
+      rowRefsRef.current[hoveredId]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    }
+  }, [hoveredId])
 
   // Sync pin active state — always on pinEl, never on the root el MapLibre owns
   useEffect(() => {
@@ -287,66 +312,6 @@ export default function ExploreMap({ onMapLoaded }) {
         console.warn('Map styling:', e)
       }
 
-      // ── Tren Urbano ──────────────────────────────────────────────────────────
-      // Added before the mask so the line only renders inside San Juan.
-      const routeCoords = TREN_URBANO_STATIONS.map((s) => [s.lng, s.lat])
-      const transitColor = '#3D6FA5'
-
-      map.current.addSource('tren-urbano', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [
-            // Route line
-            {
-              type: 'Feature',
-              properties: {},
-              geometry: { type: 'LineString', coordinates: routeCoords },
-            },
-            // Station points
-            ...TREN_URBANO_STATIONS.map((s) => ({
-              type: 'Feature',
-              properties: { name: s.name, nearDelRom: s.nearDelRom },
-              geometry: { type: 'Point', coordinates: [s.lng, s.lat] },
-            })),
-          ],
-        },
-      })
-
-      // White backing gives the classic double-stroke metro line look
-      map.current.addLayer({
-        id: 'tren-urbano-bg',
-        type: 'line',
-        source: 'tren-urbano',
-        filter: ['==', '$type', 'LineString'],
-        paint: { 'line-color': '#ffffff', 'line-width': 5, 'line-opacity': 0.9 },
-      })
-
-      // Coloured front line
-      map.current.addLayer({
-        id: 'tren-urbano-line',
-        type: 'line',
-        source: 'tren-urbano',
-        filter: ['==', '$type', 'LineString'],
-        paint: { 'line-color': transitColor, 'line-width': 3, 'line-opacity': 0.95 },
-      })
-
-      // Station dots — nearDelRom stations slightly larger
-      map.current.addLayer({
-        id: 'tren-urbano-stations',
-        type: 'circle',
-        source: 'tren-urbano',
-        filter: ['==', '$type', 'Point'],
-        paint: {
-          'circle-radius':       ['case', ['get', 'nearDelRom'], 6, 4],
-          'circle-color':        '#ffffff',
-          'circle-stroke-color': transitColor,
-          'circle-stroke-width': ['case', ['get', 'nearDelRom'], 2.5, 1.8],
-          'circle-opacity':      1,
-        },
-      })
-      // ─────────────────────────────────────────────────────────────────────────
-
       // Hide everything outside San Juan Municipality.
       // GeoJSON requires: exterior ring = CCW, interior hole = CW.
       map.current.addSource('sj-mask', {
@@ -377,7 +342,7 @@ export default function ExploreMap({ onMapLoaded }) {
       // DelRom property marker — logo mark in a white circle with pointer
       // propEl: root, MapLibre positions this — we never touch its transform
       const propEl = document.createElement('div')
-      propEl.style.cssText = 'cursor:default;line-height:0'
+      propEl.style.cssText = 'cursor:pointer;line-height:0'
 
       // propPin: inner element we fully control
       const propPin = document.createElement('div')
@@ -419,6 +384,8 @@ export default function ExploreMap({ onMapLoaded }) {
       propPin.appendChild(tip)
       propEl.appendChild(propPin)
 
+      propEl.addEventListener('click', () => setActiveLocation(PROPERTY_LOCATION))
+
       new maplibregl.Marker({ element: propEl, anchor: 'bottom' })
         .setLngLat([MAP_CENTER.lng, MAP_CENTER.lat])
         .addTo(map.current)
@@ -450,6 +417,62 @@ export default function ExploreMap({ onMapLoaded }) {
     filteredLocations.forEach((loc) => {
       if (markersRef.current[loc.id]) return
       const color = CATEGORY_COLORS[loc.category]
+
+      // Airport — special landmark marker, styled like the DelRom pin
+      if (loc.type === 'airport') {
+        const airportColor = CATEGORY_COLORS['transit']
+        const iconSvg = getLucideIconSvg(Plane)
+
+        const el = document.createElement('div')
+        el.style.cssText = 'cursor:pointer;line-height:0'
+
+        const pinEl = document.createElement('div')
+        pinEl.className = 'delrom-badge'
+        pinEl.style.cssText = 'display:flex;flex-direction:column;align-items:center;transition:filter 0.15s,transform 0.15s'
+
+        const circle = document.createElement('div')
+        circle.style.cssText = [
+          'width:48px', 'height:48px',
+          `background:${airportColor}`,
+          'clip-path:circle(50%)',
+          'display:flex', 'align-items:center', 'justify-content:center',
+        ].join(';')
+        circle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${iconSvg}</svg>`
+
+        const tip = document.createElement('div')
+        tip.style.cssText = [
+          'width:0', 'height:0',
+          'border-left:7px solid transparent',
+          'border-right:7px solid transparent',
+          `border-top:9px solid ${airportColor}`,
+          'margin-top:-1px',
+        ].join(';')
+
+        pinEl.appendChild(circle)
+        pinEl.appendChild(tip)
+        el.appendChild(pinEl)
+
+        el.addEventListener('mouseenter', () => {
+          if (chipElsRef.current[loc.id]?.active) return
+          pinEl.style.transform = 'translateY(-3px) scale(1.1)'
+        })
+        el.addEventListener('mouseleave', () => {
+          if (chipElsRef.current[loc.id]?.active) return
+          pinEl.style.transform = 'translateY(0) scale(1)'
+        })
+        el.addEventListener('click', (e) => {
+          e.stopPropagation()
+          handleSelectLocation(loc)
+        })
+
+        const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([loc.lng, loc.lat])
+          .addTo(map.current)
+        markersRef.current[loc.id] = marker
+        chipElsRef.current[loc.id] = { pinEl, color: airportColor, active: false }
+        return
+      }
+
       const w  = loc.featured ? 32 : 28
       const h  = loc.featured ? 44 : 38
       const cx = w / 2
@@ -471,7 +494,8 @@ export default function ExploreMap({ onMapLoaded }) {
       const iconOff   = cx - iconSize / 2
       // Compensate stroke-width for scale so lines stay ~1.5px visually
       const strokeW   = (1.5 / iconScale).toFixed(1)
-      const iconSvg   = iconNodesToSvg(CATEGORY_ICON_NODES[loc.category] ?? [])
+      const IconComponent = TYPE_ICON_MAP[loc.subtype] ?? TYPE_ICON_MAP[loc.type] ?? Landmark
+      const iconSvg   = getLucideIconSvg(IconComponent)
 
       // el: root — MapLibre owns the transform on this, never touch it
       const el = document.createElement('div')
@@ -498,11 +522,15 @@ export default function ExploreMap({ onMapLoaded }) {
         if (chipElsRef.current[loc.id]?.active) return
         pinEl.style.filter    = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'
         pinEl.style.transform = 'translateY(-3px) scale(1.15)'
+        hoverFromPin.current = true
+        setHoveredId(loc.id)
       })
       el.addEventListener('mouseleave', () => {
         if (chipElsRef.current[loc.id]?.active) return
         pinEl.style.filter    = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'
         pinEl.style.transform = 'translateY(0) scale(1)'
+        hoverFromPin.current = false
+        setHoveredId(null)
       })
       el.addEventListener('click', (e) => {
         e.stopPropagation()
@@ -574,31 +602,49 @@ export default function ExploreMap({ onMapLoaded }) {
         <div ref={mapContainer} className="absolute inset-0" />
 
 
-        {/* My Location button — sits above the card strip when visible */}
+        {/* My Location button */}
         <button
           onClick={handleMyLocation}
           className="absolute right-3 z-20 w-9 h-9 bg-warmWhite border border-taupe/40 flex items-center justify-center hover:bg-terracotta hover:text-warmWhite hover:border-terracotta transition-colors shadow-sm"
-          style={{ bottom: stripVisible ? `${STRIP_HEIGHT + 12}px` : '2rem' }}
+          style={{ bottom: drawerVisible ? `${DRAWER_HEIGHT + 12}px` : '2rem' }}
           aria-label={t('explore.myLocation')}
         >
           <LocateFixed size={16} strokeWidth={1.5} />
         </button>
 
-        {/* Info card — floats above the card strip on mobile */}
+        {/* Info card */}
         {activeLocation && (() => {
           const openStatus = getOpenStatus(activeLocation.hours)
           return (
             <>
               <div
-                className="absolute left-0 right-0 sm:left-auto sm:right-4 sm:w-72 bg-warmWhite border border-taupe/40 shadow-lg z-20 overflow-hidden"
-                style={{ bottom: stripVisible ? `${STRIP_HEIGHT}px` : '0' }}
+                className="absolute left-0 right-0 md:left-auto md:right-4 md:w-80 bg-warmWhite border border-taupe/40 shadow-lg z-20 overflow-hidden"
+                style={{ bottom: drawerVisible ? `${DRAWER_HEIGHT}px` : '0' }}
               >
-                {activeLocation.photo && (
-                  <img
-                    src={activeLocation.photo}
-                    alt={activeLocation.name}
-                    className="w-full h-36 object-cover"
-                  />
+                {activeLocation.category === 'property' ? (
+                  <div className="w-full h-36 flex items-center justify-center" style={{ backgroundColor: PROPERTY_COLOR }}>
+                    <div dangerouslySetInnerHTML={{ __html: delromMarkRaw.replace('<svg', '<svg width="72" height="72"') }} />
+                  </div>
+                ) : activeLocation.photo && (
+                  (() => {
+                    const isPlaceholder = activeLocation.photo.includes('picsum')
+                    const color = CATEGORY_COLORS[activeLocation.category]
+
+                    return isPlaceholder ? (
+                      <div className="w-full h-36 flex items-center justify-center" style={{ backgroundColor: color }}>
+                        {(() => {
+                          const IconComponent = TYPE_ICON_MAP[activeLocation.subtype] ?? TYPE_ICON_MAP[activeLocation.type] ?? Landmark
+                          return <IconComponent size={48} strokeWidth={1.5} color="white" />
+                        })()}
+                      </div>
+                    ) : (
+                      <img
+                        src={activeLocation.photo}
+                        alt={activeLocation.name}
+                        className="w-full h-36 object-cover"
+                      />
+                    )
+                  })()
                 )}
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-2">
@@ -614,7 +660,9 @@ export default function ExploreMap({ onMapLoaded }) {
                         )}
                       </div>
                       <p className="font-sans font-light text-xs tracking-widest uppercase text-terracotta">
-                        {t(`explore.categories.${activeLocation.category}`)} · {activeLocation.distance}
+                        {activeLocation.category === 'property'
+                          ? 'Río Piedras · San Juan, PR'
+                          : `${t(`explore.categories.${activeLocation.category}`)} · ${activeLocation.distance}`}
                       </p>
                     </div>
                     <button
@@ -675,65 +723,65 @@ export default function ExploreMap({ onMapLoaded }) {
           )
         })()}
 
-        {/* Horizontal swipeable card strip */}
+        {/* Desktop side panel — always visible */}
         <div
-          className="absolute bottom-0 left-0 right-0 z-30 bg-warmWhite/95 backdrop-blur border-t border-taupe/40"
-          style={{
-            height: `${STRIP_HEIGHT}px`,
-            transform: stripVisible ? 'translateY(0)' : 'translateY(110%)',
-            transition: 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          }}
+          className="hidden md:flex flex-col absolute left-0 top-0 bottom-0 z-20 w-72 backdrop-blur-md border-r border-taupe/40"
+          style={{ background: 'rgba(250, 248, 244, 0.94)' }}
         >
-          <div
-            className="flex gap-3 h-full items-center px-4 overflow-x-auto"
-            style={{
-              scrollSnapType: 'x mandatory',
-              scrollbarWidth: 'none',
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
+          {/* Panel header */}
+          <div className="px-5 pt-4 pb-3 border-b border-taupe/20 flex items-center justify-between flex-shrink-0">
+            <p className="font-sans font-light text-xs tracking-widest uppercase text-terracotta">
+              {selectedCategory !== 'all' ? t(`explore.categories.${selectedCategory}`) : t('explore.categories.all')}
+              <span className="text-taupe ml-2">{filteredLocations.length}</span>
+            </p>
+            {(selectedCategory !== 'all' || searchQuery !== '') && (
+              <button onClick={() => { setSelectedCategory('all'); setSearchQuery('') }} className="text-taupe hover:text-espresso transition-colors">
+                <X size={14} />
+              </button>
+            )}
+          </div>
+          {/* Scrollable list */}
+          <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
             {filteredLocations.map((loc) => {
               const openStatus = getOpenStatus(loc.hours)
               const isActive   = activeLocation?.id === loc.id
+              const isHovered  = hoveredId === loc.id
               return (
                 <button
                   key={loc.id}
+                  ref={(el) => { rowRefsRef.current[loc.id] = el }}
                   onClick={() => handleSelectLocation(loc)}
-                  className={`flex-shrink-0 w-44 h-24 text-left border transition-colors flex overflow-hidden ${
-                    isActive
-                      ? 'border-terracotta'
-                      : 'border-taupe/40 hover:border-terracotta'
+                  onMouseEnter={() => {
+                    hoverFromPin.current = false
+                    setHoveredId(loc.id)
+                    const entry = chipElsRef.current[loc.id]
+                    if (entry && !entry.active) {
+                      entry.pinEl.style.filter    = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'
+                      entry.pinEl.style.transform = 'translateY(-3px) scale(1.15)'
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredId(null)
+                    const entry = chipElsRef.current[loc.id]
+                    if (entry && !entry.active) {
+                      entry.pinEl.style.filter    = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'
+                      entry.pinEl.style.transform = 'translateY(0) scale(1)'
+                    }
+                  }}
+                  className={`w-full text-left px-5 py-3.5 border-b border-taupe/15 flex items-start gap-3 transition-colors ${
+                    isActive ? 'bg-sand border-l-2 border-l-terracotta' : isHovered ? 'bg-sand border-l-2 border-l-taupe' : ''
                   }`}
-                  style={{ scrollSnapAlign: 'start' }}
                 >
-                  {/* Thumbnail */}
-                  {loc.photo ? (
-                    <img
-                      src={loc.photo}
-                      alt={loc.name}
-                      className="w-16 h-full object-cover flex-shrink-0"
-                    />
-                  ) : (
-                    <div
-                      className="w-16 h-full flex-shrink-0"
-                      style={{ backgroundColor: CATEGORY_COLORS[loc.category] + '33' }}
-                    />
-                  )}
-
-                  {/* Content */}
-                  <div className={`flex-1 min-w-0 p-2 flex flex-col justify-between ${isActive ? 'bg-sand' : 'bg-warmWhite'}`}>
-                    <div className="flex items-start gap-1 min-w-0">
-                      <span className="font-sans font-light text-xs text-espresso leading-tight line-clamp-2 flex-1 min-w-0">
-                        {loc.name}
-                      </span>
-                      {loc.featured && (
-                        <Star size={9} className="text-terracotta flex-shrink-0 mt-0.5" fill="currentColor" />
-                      )}
+                  <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category] }} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="font-sans font-light text-sm text-espresso leading-snug flex-1 min-w-0 truncate">{loc.name}</span>
+                      {loc.featured && <Star size={9} className="text-terracotta flex-shrink-0" fill="currentColor" />}
                     </div>
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="font-sans font-light text-[10px] text-taupe">{loc.distance}</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="font-sans font-light text-xs text-taupe">{loc.distance}</span>
                       {openStatus && (
-                        <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 flex-shrink-0 ${
+                        <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${
                           openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
                         }`}>
                           {openStatus.open ? t('explore.openNow') : t('explore.closed')}
@@ -744,8 +792,76 @@ export default function ExploreMap({ onMapLoaded }) {
                 </button>
               )
             })}
-            {/* Trailing padding card so last item has breathing room */}
-            <div className="flex-shrink-0 w-1" aria-hidden />
+          </div>
+        </div>
+
+        {/* Mobile bottom drawer */}
+        <div
+          className="md:hidden absolute bottom-0 left-0 right-0 z-30 backdrop-blur-md border-t border-taupe/40 flex flex-col"
+          style={{ background: 'rgba(250, 248, 244, 0.94)' }}
+          style={{
+            height: `${DRAWER_HEIGHT}px`,
+            transform: drawerVisible ? 'translateY(0)' : 'translateY(110%)',
+            transition: 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          }}
+        >
+          {/* Drawer header */}
+          <div className="px-4 pt-3 pb-2 border-b border-taupe/20 flex items-center justify-between flex-shrink-0">
+            <p className="font-sans font-light text-xs tracking-widest uppercase text-terracotta">
+              {selectedCategory !== 'all' ? t(`explore.categories.${selectedCategory}`) : t('explore.categories.all')}
+              <span className="text-taupe ml-2">{filteredLocations.length}</span>
+            </p>
+            <button onClick={() => { setSelectedCategory('all'); setSearchQuery('') }} className="text-taupe hover:text-espresso transition-colors">
+              <X size={14} />
+            </button>
+          </div>
+          {/* Scrollable list */}
+          <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+            {filteredLocations.map((loc) => {
+              const openStatus = getOpenStatus(loc.hours)
+              const isActive   = activeLocation?.id === loc.id
+              const isHovered  = hoveredId === loc.id
+              return (
+                <button
+                  key={loc.id}
+                  onClick={() => handleSelectLocation(loc)}
+                  onMouseEnter={() => {
+                    hoverFromPin.current = false
+                    setHoveredId(loc.id)
+                    const entry = chipElsRef.current[loc.id]
+                    if (entry && !entry.active) {
+                      entry.pinEl.style.filter    = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'
+                      entry.pinEl.style.transform = 'translateY(-3px) scale(1.15)'
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredId(null)
+                    const entry = chipElsRef.current[loc.id]
+                    if (entry && !entry.active) {
+                      entry.pinEl.style.filter    = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'
+                      entry.pinEl.style.transform = 'translateY(0) scale(1)'
+                    }
+                  }}
+                  className={`w-full text-left px-4 py-3 border-b border-taupe/15 flex items-center gap-3 transition-colors ${
+                    isActive ? 'bg-sand border-l-2 border-l-terracotta' : isHovered ? 'bg-sand border-l-2 border-l-taupe' : ''
+                  }`}
+                >
+                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category] }} />
+                  <span className="font-sans font-light text-sm text-espresso flex-1 min-w-0 truncate">{loc.name}</span>
+                  {loc.featured && <Star size={9} className="text-terracotta flex-shrink-0" fill="currentColor" />}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="font-sans font-light text-xs text-taupe">{loc.distance}</span>
+                    {openStatus && (
+                      <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${
+                        openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
+                      }`}>
+                        {openStatus.open ? t('explore.openNow') : t('explore.closed')}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              )
+            })}
           </div>
         </div>
       </div>
