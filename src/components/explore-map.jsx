@@ -239,9 +239,9 @@ export default function ExploreMap({ onMapLoaded }) {
     setActiveLocation({ ...loc, distance: dist })
     const isMobile = window.innerWidth < 768
     const padding = isMobile
-      ? { top: 80, bottom: 340, left: 24, right: 24 }   // above info card
-      : { top: 40, bottom: 60, left: 300, right: 360 }  // clear of side panel + info card
-    map.current?.flyTo({ center: [loc.lng, loc.lat], zoom: 16, duration: 600, padding })
+      ? { top: 80, bottom: 340, left: 24, right: 24 }
+      : { top: 40, bottom: 60, left: 300, right: 360 }
+    map.current?.easeTo({ center: [loc.lng, loc.lat], zoom: 16, duration: 500, padding })
   }
 
   const handleMyLocation = () => {
