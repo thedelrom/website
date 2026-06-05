@@ -6,7 +6,7 @@ import {
   X, Phone, Globe, LocateFixed,
   LayoutGrid, UtensilsCrossed, Waves, ShoppingBag, Landmark, Music2, Star,
   ShieldAlert, Train, Film, Trophy, Ticket, Package, Trees, Frame,
-  MapPin, Droplet, Pill, Fuel, Plane, HeartPulse, ShieldCheck, Flame, Banknote,
+  MapPin, Droplet, Pill, Fuel, Plane, HeartPulse, ShieldCheck, Flame, Banknote, Bus,
 } from 'lucide-react'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { MAP_CENTER, MAPS_OPEN_URL, NEARBY_LOCATIONS, TREN_URBANO_STATIONS } from '@/config.js'
@@ -21,6 +21,11 @@ const CATEGORY_COLORS = {
   emergency:   '#C94040',
   transit:     '#3D6FA5',
   property:    '#2C2520',
+}
+
+// Override category color for specific location types
+const TYPE_COLORS = {
+  airport: '#3D6FA5',
 }
 
 const PROPERTY_LOCATION = {
@@ -86,6 +91,7 @@ const TYPE_ICON_MAP = {
   'fire-station': Flame,
   // Transit
   'train-station': Train,
+  'bus-stop': Bus,
   airport: Plane,
 }
 
@@ -150,8 +156,9 @@ export default function ExploreMap({ onMapLoaded }) {
   const [searchQuery,      setSearchQuery]      = useState('')
   const [userLocation,     setUserLocation]     = useState(null)
   const [hoveredId,        setHoveredId]        = useState(null)
-  const rowRefsRef   = useRef({})
-  const hoverFromPin = useRef(false)
+  const rowRefsRef    = useRef({})
+  const hoverFromPin  = useRef(false)
+  const userLabelRef  = useRef(null)
   // Increments each time a new map instance finishes loading.
   // Using a counter (not a boolean) ensures the markers effect always re-runs
   // even in React Strict Mode, where effects are intentionally run twice and
@@ -159,7 +166,7 @@ export default function ExploreMap({ onMapLoaded }) {
   const [mapLoadCount,     setMapLoadCount]     = useState(0)
 
   const panelVisible = true // desktop panel always visible
-  const drawerVisible = selectedCategory !== 'all' || searchQuery !== '' // mobile drawer only when filtering
+  const drawerVisible = (selectedCategory !== 'all' || searchQuery !== '') && !activeLocation // hide drawer when info card is open
   const stripVisible = drawerVisible
 
   const categoryCounts = useMemo(() => {
@@ -182,10 +189,20 @@ export default function ExploreMap({ onMapLoaded }) {
     })
   }, [selectedCategory, searchQuery])
 
+  const pickedLocations = useMemo(() => filteredLocations.filter(l => l.featured), [filteredLocations])
+  const otherLocations  = useMemo(() => filteredLocations.filter(l => !l.featured), [filteredLocations])
+
   // Clear active location when switching category
   useEffect(() => {
     setActiveLocation(null)
   }, [selectedCategory])
+
+  // Keep "You are here" label in sync with current language
+  useEffect(() => {
+    if (userLabelRef.current) {
+      userLabelRef.current.textContent = t('explore.youAreHere')
+    }
+  }, [t])
 
   // Scroll panel to hovered row when hover originates from a pin
   useEffect(() => {
@@ -220,7 +237,11 @@ export default function ExploreMap({ onMapLoaded }) {
       ? calcDistance(userLocation.lat, userLocation.lng, loc.lat, loc.lng)
       : loc.distance
     setActiveLocation({ ...loc, distance: dist })
-    map.current?.flyTo({ center: [loc.lng, loc.lat], zoom: 16, duration: 600 })
+    const isMobile = window.innerWidth < 768
+    const padding = isMobile
+      ? { top: 80, bottom: 340, left: 24, right: 24 }   // above info card
+      : { top: 40, bottom: 60, left: 300, right: 360 }  // clear of side panel + info card
+    map.current?.flyTo({ center: [loc.lng, loc.lat], zoom: 16, duration: 600, padding })
   }
 
   const handleMyLocation = () => {
@@ -229,9 +250,56 @@ export default function ExploreMap({ onMapLoaded }) {
       ({ coords: { latitude, longitude } }) => {
         setUserLocation({ lat: latitude, lng: longitude })
         userMarkerRef.current?.remove()
+
         const el = document.createElement('div')
-        el.style.cssText = 'width:12px;height:12px;background:#3B82F6;border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.3)'
-        userMarkerRef.current = new maplibregl.Marker({ element: el })
+        el.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px'
+
+        // "You are here" label — stored in ref so language updates can retranslate it
+        const label = document.createElement('div')
+        label.textContent = t('explore.youAreHere')
+        userLabelRef.current = label
+        label.style.cssText = [
+          'background:white',
+          'border:1px solid #C4B5A0',
+          'padding:3px 8px',
+          'font-size:9px',
+          'letter-spacing:0.12em',
+          'text-transform:uppercase',
+          'font-family:Jost,sans-serif',
+          'color:#2C2520',
+          'white-space:nowrap',
+          'box-shadow:0 1px 6px rgba(0,0,0,0.12)',
+        ].join(';')
+
+        // Dot container
+        const dotWrap = document.createElement('div')
+        dotWrap.style.cssText = 'position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center'
+
+        // Pulse ring — clip-path overrides the global border-radius:0 !important
+        const ring = document.createElement('div')
+        ring.className = 'location-ring'
+        ring.style.cssText = 'position:absolute;width:28px;height:28px;background:rgba(59,130,246,0.35);clip-path:circle(50%)'
+
+        // Core dot — white wrapper gives the border, inner is the blue fill
+        const dot = document.createElement('div')
+        dot.style.cssText = [
+          'width:22px', 'height:22px',
+          'background:white',
+          'clip-path:circle(50%)',
+          'display:flex', 'align-items:center', 'justify-content:center',
+          'position:relative', 'z-index:1',
+          'filter:drop-shadow(0 2px 8px rgba(59,130,246,0.55))',
+        ].join(';')
+        const dotInner = document.createElement('div')
+        dotInner.style.cssText = 'width:16px;height:16px;background:#3B82F6;clip-path:circle(50%)'
+        dot.appendChild(dotInner)
+
+        dotWrap.appendChild(ring)
+        dotWrap.appendChild(dot)
+        el.appendChild(label)
+        el.appendChild(dotWrap)
+
+        userMarkerRef.current = new maplibregl.Marker({ element: el, anchor: 'bottom' })
           .setLngLat([longitude, latitude])
           .addTo(map.current)
         const bounds = new maplibregl.LngLatBounds()
@@ -392,6 +460,9 @@ export default function ExploreMap({ onMapLoaded }) {
 
       setMapLoadCount(c => c + 1)
       onMapLoaded()
+
+      // Close info card when tapping empty map space — pins stop propagation so they won't trigger this
+      map.current.on('click', () => setActiveLocation(null))
     })
 
     return () => {
@@ -416,11 +487,11 @@ export default function ExploreMap({ onMapLoaded }) {
 
     filteredLocations.forEach((loc) => {
       if (markersRef.current[loc.id]) return
-      const color = CATEGORY_COLORS[loc.category]
+      const color = TYPE_COLORS[loc.subtype] ?? TYPE_COLORS[loc.type] ?? CATEGORY_COLORS[loc.category]
 
       // Airport — special landmark marker, styled like the DelRom pin
       if (loc.type === 'airport') {
-        const airportColor = CATEGORY_COLORS['transit']
+        const airportColor = TYPE_COLORS['airport']
         const iconSvg = getLucideIconSvg(Plane)
 
         const el = document.createElement('div')
@@ -497,25 +568,56 @@ export default function ExploreMap({ onMapLoaded }) {
       const IconComponent = TYPE_ICON_MAP[loc.subtype] ?? TYPE_ICON_MAP[loc.type] ?? Landmark
       const iconSvg   = getLucideIconSvg(IconComponent)
 
-      // el: root — MapLibre owns the transform on this, never touch it
       const el = document.createElement('div')
       el.style.cssText = 'cursor:pointer;display:flex;align-items:flex-start'
 
-      // pinEl: inner — safe for filter/transform transitions
       const pinEl = document.createElement('div')
       pinEl.style.cssText = [
         'line-height:0',
         'filter:drop-shadow(0 2px 4px rgba(0,0,0,0.28))',
         'transition:filter 0.15s,transform 0.15s',
       ].join(';')
-      pinEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+
+      const isTransit = loc.category === 'transit'
+
+      if (isTransit) {
+        // Circle marker for transit stops — no teardrop tip
+        const r = loc.featured ? 16 : 13
+        const size = r * 2
+        const iSize = r * 0.75
+        const iScale = iSize / 24
+        const iOff = r - iSize / 2
+        const iStroke = (1.5 / iScale).toFixed(1)
+        const starBadge = loc.featured ? `
+          <circle cx="${size - 2}" cy="2" r="7" fill="#C17A5A" stroke="white" stroke-width="1.5"/>
+          <text x="${size - 2}" y="6" text-anchor="middle" font-size="9" fill="white" font-family="sans-serif">★</text>
+        ` : ''
+        pinEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" overflow="visible">
+          <circle cx="${r}" cy="${r}" r="${r - 1}" fill="${color}" stroke="white" stroke-width="1.5"/>
+          <g transform="translate(${iOff},${iOff}) scale(${iScale})"
+             stroke="white" fill="none" stroke-width="${iStroke}"
+             stroke-linecap="round" stroke-linejoin="round">
+            ${iconSvg}
+          </g>
+          ${starBadge}
+        </svg>`
+      } else {
+        // Teardrop marker for all other POIs
+        const starBadge = loc.featured ? `
+          <circle cx="${w - 1}" cy="4" r="8" fill="#C17A5A" stroke="white" stroke-width="1.5"/>
+          <text x="${w - 1}" y="8" text-anchor="middle" font-size="11" fill="white" font-family="sans-serif">★</text>
+        ` : ''
+        pinEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="visible">
           <path d="${path}" fill="${color}" stroke="white" stroke-width="1.5"/>
           <g transform="translate(${iconOff},${iconOff}) scale(${iconScale})"
              stroke="white" fill="none" stroke-width="${strokeW}"
              stroke-linecap="round" stroke-linejoin="round">
             ${iconSvg}
           </g>
+          ${starBadge}
         </svg>`
+      }
+
       el.appendChild(pinEl)
 
       el.addEventListener('mouseenter', () => {
@@ -537,7 +639,8 @@ export default function ExploreMap({ onMapLoaded }) {
         handleSelectLocation(loc)
       })
 
-      const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+      const anchor = isTransit ? 'center' : 'bottom'
+      const marker = new maplibregl.Marker({ element: el, anchor })
         .setLngLat([loc.lng, loc.lat])
         .addTo(map.current)
       markersRef.current[loc.id] = marker
@@ -555,8 +658,12 @@ export default function ExploreMap({ onMapLoaded }) {
 
   return (
     <div className="w-full h-full flex flex-col relative">
-      {/* Filter strip */}
-      <div className="bg-warmWhite/95 backdrop-blur border-b border-taupe/40 z-30">
+      {/* Filter strip — collapses on mobile when info card is open */}
+      <div
+        className={`bg-warmWhite/95 backdrop-blur border-b border-taupe/40 z-30 overflow-hidden transition-[max-height] duration-300 ease-in-out ${
+          activeLocation ? 'max-h-0 md:max-h-56' : 'max-h-56'
+        }`}
+      >
         {/* Category buttons — single scrollable row on all screen sizes */}
         <div
           className="flex gap-1.5 px-4 pt-3 pb-2 overflow-x-auto"
@@ -717,8 +824,6 @@ export default function ExploreMap({ onMapLoaded }) {
                   </div>
                 </div>
               </div>
-              {/* Tap backdrop to close info card */}
-              <div className="absolute inset-0 z-10" onClick={() => setActiveLocation(null)} aria-hidden />
             </>
           )
         })()}
@@ -742,7 +847,50 @@ export default function ExploreMap({ onMapLoaded }) {
           </div>
           {/* Scrollable list */}
           <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
-            {filteredLocations.map((loc) => {
+            {/* DelRom Picks section */}
+            {pickedLocations.length > 0 && (
+              <>
+                <div className="px-5 pt-3.5 pb-2 flex items-center gap-1.5">
+                  <Star size={9} className="text-terracotta flex-shrink-0" fill="currentColor" />
+                  <p className="font-sans font-light text-[10px] tracking-widest uppercase text-terracotta">
+                    {t('explore.delromPicks')}
+                  </p>
+                </div>
+                {pickedLocations.map(loc => {
+                  const openStatus = getOpenStatus(loc.hours)
+                  const isActive   = activeLocation?.id === loc.id
+                  const isHovered  = hoveredId === loc.id
+                  return (
+                    <button key={loc.id} ref={(el) => { rowRefsRef.current[loc.id] = el }}
+                      onClick={() => handleSelectLocation(loc)}
+                      onMouseEnter={() => { hoverFromPin.current = false; setHoveredId(loc.id); const e = chipElsRef.current[loc.id]; if (e && !e.active) { e.pinEl.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'; e.pinEl.style.transform = 'translateY(-3px) scale(1.15)' } }}
+                      onMouseLeave={() => { setHoveredId(null); const e = chipElsRef.current[loc.id]; if (e && !e.active) { e.pinEl.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'; e.pinEl.style.transform = 'translateY(0) scale(1)' } }}
+                      className={`w-full text-left px-5 py-3.5 border-b border-taupe/15 flex items-start gap-3 transition-colors ${isActive ? 'bg-sand border-l-2 border-l-terracotta' : isHovered ? 'bg-sand border-l-2 border-l-taupe' : 'bg-sand/30'}`}
+                    >
+                      <div className="w-1.5 h-1.5 mt-1.5 flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category], clipPath: 'circle(50%)' }} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="font-sans font-light text-sm text-espresso leading-snug flex-1 min-w-0 truncate">{loc.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="font-sans font-light text-xs text-taupe">{loc.distance}</span>
+                          {openStatus && <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{openStatus.open ? t('explore.openNow') : t('explore.closed')}</span>}
+                        </div>
+                      </div>
+                    </button>
+                  )
+                })}
+                {otherLocations.length > 0 && (
+                  <div className="px-5 pt-3.5 pb-2 flex items-center gap-1.5 border-t border-taupe/20">
+                    <p className="font-sans font-light text-[10px] tracking-widest uppercase text-taupe">
+                      {t('explore.categories.all')} · {otherLocations.length}
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+            {/* Regular locations */}
+            {otherLocations.map((loc) => {
               const openStatus = getOpenStatus(loc.hours)
               const isActive   = activeLocation?.id === loc.id
               const isHovered  = hoveredId === loc.id
@@ -751,42 +899,18 @@ export default function ExploreMap({ onMapLoaded }) {
                   key={loc.id}
                   ref={(el) => { rowRefsRef.current[loc.id] = el }}
                   onClick={() => handleSelectLocation(loc)}
-                  onMouseEnter={() => {
-                    hoverFromPin.current = false
-                    setHoveredId(loc.id)
-                    const entry = chipElsRef.current[loc.id]
-                    if (entry && !entry.active) {
-                      entry.pinEl.style.filter    = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'
-                      entry.pinEl.style.transform = 'translateY(-3px) scale(1.15)'
-                    }
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredId(null)
-                    const entry = chipElsRef.current[loc.id]
-                    if (entry && !entry.active) {
-                      entry.pinEl.style.filter    = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'
-                      entry.pinEl.style.transform = 'translateY(0) scale(1)'
-                    }
-                  }}
-                  className={`w-full text-left px-5 py-3.5 border-b border-taupe/15 flex items-start gap-3 transition-colors ${
-                    isActive ? 'bg-sand border-l-2 border-l-terracotta' : isHovered ? 'bg-sand border-l-2 border-l-taupe' : ''
-                  }`}
+                  onMouseEnter={() => { hoverFromPin.current = false; setHoveredId(loc.id); const e = chipElsRef.current[loc.id]; if (e && !e.active) { e.pinEl.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'; e.pinEl.style.transform = 'translateY(-3px) scale(1.15)' } }}
+                  onMouseLeave={() => { setHoveredId(null); const e = chipElsRef.current[loc.id]; if (e && !e.active) { e.pinEl.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'; e.pinEl.style.transform = 'translateY(0) scale(1)' } }}
+                  className={`w-full text-left px-5 py-3.5 border-b border-taupe/15 flex items-start gap-3 transition-colors ${isActive ? 'bg-sand border-l-2 border-l-terracotta' : isHovered ? 'bg-sand border-l-2 border-l-taupe' : ''}`}
                 >
-                  <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category] }} />
+                  <div className="w-1.5 h-1.5 mt-1.5 flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category], clipPath: 'circle(50%)' }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <span className="font-sans font-light text-sm text-espresso leading-snug flex-1 min-w-0 truncate">{loc.name}</span>
-                      {loc.featured && <Star size={9} className="text-terracotta flex-shrink-0" fill="currentColor" />}
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="font-sans font-light text-xs text-taupe">{loc.distance}</span>
-                      {openStatus && (
-                        <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${
-                          openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
-                        }`}>
-                          {openStatus.open ? t('explore.openNow') : t('explore.closed')}
-                        </span>
-                      )}
+                      {openStatus && <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{openStatus.open ? t('explore.openNow') : t('explore.closed')}</span>}
                     </div>
                   </div>
                 </button>
@@ -798,8 +922,8 @@ export default function ExploreMap({ onMapLoaded }) {
         {/* Mobile bottom drawer */}
         <div
           className="md:hidden absolute bottom-0 left-0 right-0 z-30 backdrop-blur-md border-t border-taupe/40 flex flex-col"
-          style={{ background: 'rgba(250, 248, 244, 0.94)' }}
           style={{
+            background: 'rgba(250, 248, 244, 0.94)',
             height: `${DRAWER_HEIGHT}px`,
             transform: drawerVisible ? 'translateY(0)' : 'translateY(110%)',
             transition: 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -817,7 +941,32 @@ export default function ExploreMap({ onMapLoaded }) {
           </div>
           {/* Scrollable list */}
           <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
-            {filteredLocations.map((loc) => {
+            {pickedLocations.length > 0 && (
+              <>
+                <div className="px-4 pt-2.5 pb-1.5 flex items-center gap-1.5">
+                  <Star size={8} className="text-terracotta flex-shrink-0" fill="currentColor" />
+                  <p className="font-sans font-light text-[9px] tracking-widest uppercase text-terracotta">{t('explore.delromPicks')}</p>
+                </div>
+                {pickedLocations.map(loc => {
+                  const openStatus = getOpenStatus(loc.hours)
+                  const isActive = activeLocation?.id === loc.id
+                  return (
+                    <button key={loc.id} onClick={() => handleSelectLocation(loc)}
+                      className={`w-full text-left px-4 py-2.5 border-b border-taupe/15 flex items-center gap-3 transition-colors ${isActive ? 'bg-sand border-l-2 border-l-terracotta' : 'bg-sand/30'}`}
+                    >
+                      <div className="w-1.5 h-1.5 flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category], clipPath: 'circle(50%)' }} />
+                      <span className="font-sans font-light text-sm text-espresso flex-1 min-w-0 truncate">{loc.name}</span>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="font-sans font-light text-xs text-taupe">{loc.distance}</span>
+                        {openStatus && <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{openStatus.open ? t('explore.openNow') : t('explore.closed')}</span>}
+                      </div>
+                    </button>
+                  )
+                })}
+                {otherLocations.length > 0 && <div className="border-t border-taupe/20" />}
+              </>
+            )}
+            {otherLocations.map((loc) => {
               const openStatus = getOpenStatus(loc.hours)
               const isActive   = activeLocation?.id === loc.id
               const isHovered  = hoveredId === loc.id
@@ -825,39 +974,15 @@ export default function ExploreMap({ onMapLoaded }) {
                 <button
                   key={loc.id}
                   onClick={() => handleSelectLocation(loc)}
-                  onMouseEnter={() => {
-                    hoverFromPin.current = false
-                    setHoveredId(loc.id)
-                    const entry = chipElsRef.current[loc.id]
-                    if (entry && !entry.active) {
-                      entry.pinEl.style.filter    = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'
-                      entry.pinEl.style.transform = 'translateY(-3px) scale(1.15)'
-                    }
-                  }}
-                  onMouseLeave={() => {
-                    setHoveredId(null)
-                    const entry = chipElsRef.current[loc.id]
-                    if (entry && !entry.active) {
-                      entry.pinEl.style.filter    = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'
-                      entry.pinEl.style.transform = 'translateY(0) scale(1)'
-                    }
-                  }}
-                  className={`w-full text-left px-4 py-3 border-b border-taupe/15 flex items-center gap-3 transition-colors ${
-                    isActive ? 'bg-sand border-l-2 border-l-terracotta' : isHovered ? 'bg-sand border-l-2 border-l-taupe' : ''
-                  }`}
+                  onMouseEnter={() => { hoverFromPin.current = false; setHoveredId(loc.id); const e = chipElsRef.current[loc.id]; if (e && !e.active) { e.pinEl.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.38))'; e.pinEl.style.transform = 'translateY(-3px) scale(1.15)' } }}
+                  onMouseLeave={() => { setHoveredId(null); const e = chipElsRef.current[loc.id]; if (e && !e.active) { e.pinEl.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))'; e.pinEl.style.transform = 'translateY(0) scale(1)' } }}
+                  className={`w-full text-left px-4 py-3 border-b border-taupe/15 flex items-center gap-3 transition-colors ${isActive ? 'bg-sand border-l-2 border-l-terracotta' : isHovered ? 'bg-sand border-l-2 border-l-taupe' : ''}`}
                 >
-                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category] }} />
+                  <div className="w-1.5 h-1.5 flex-shrink-0" style={{ backgroundColor: CATEGORY_COLORS[loc.category], clipPath: 'circle(50%)' }} />
                   <span className="font-sans font-light text-sm text-espresso flex-1 min-w-0 truncate">{loc.name}</span>
-                  {loc.featured && <Star size={9} className="text-terracotta flex-shrink-0" fill="currentColor" />}
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="font-sans font-light text-xs text-taupe">{loc.distance}</span>
-                    {openStatus && (
-                      <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${
-                        openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
-                      }`}>
-                        {openStatus.open ? t('explore.openNow') : t('explore.closed')}
-                      </span>
-                    )}
+                    {openStatus && <span className={`text-[9px] tracking-widest uppercase font-sans px-1 py-0.5 ${openStatus.open ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{openStatus.open ? t('explore.openNow') : t('explore.closed')}</span>}
                   </div>
                 </button>
               )

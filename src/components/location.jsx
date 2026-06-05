@@ -7,11 +7,8 @@ import {
   UtensilsCrossed,
   Waves,
 } from 'lucide-react'
-import {
-  getMapEmbedSrc,
-  getStaticMapSrc,
-  MAPS_OPEN_URL,
-} from '@/config.js'
+import { MAPS_OPEN_URL } from '@/config.js'
+import PropertyMap from '@/components/property-map.jsx'
 
 const iconClass =
   'w-6 h-6 text-taupe shrink-0 mt-0.5'
@@ -27,9 +24,6 @@ const highlights = [
 
 export default function Location() {
   const { t } = useTranslation()
-  const staticMapSrc = getStaticMapSrc()
-  const embedSrc = getMapEmbedSrc()
-  const hasMap = Boolean(staticMapSrc || embedSrc)
 
   return (
     <section id="location" className="bg-warmWhite py-24 lg:py-32">
@@ -62,53 +56,18 @@ export default function Location() {
 
           {/* Right — map */}
           <div>
-            <div className="w-full aspect-[4/3] overflow-hidden border border-taupe/40 bg-sand">
-              {staticMapSrc ? (
-                <a
-                  href={MAPS_OPEN_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full h-full"
-                  aria-label={t('location.mapOpenAria')}
-                >
-                  <img
-                    src={staticMapSrc}
-                    alt={t('location.mapTitle')}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </a>
-              ) : embedSrc ? (
-                <iframe
-                  title={t('location.mapTitle')}
-                  src={embedSrc}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="w-full h-full"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <p className="font-sans font-light text-mid text-xs tracking-widest uppercase">
-                    {t('location.mapPlaceholder')}
-                  </p>
-                </div>
-              )}
+            <div className="w-full aspect-[4/3] overflow-hidden border border-taupe/40 relative">
+              <PropertyMap />
             </div>
-
-            {hasMap && (
-              <a
-                href={MAPS_OPEN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-4 font-sans font-light text-xs tracking-widest uppercase text-taupe hover:text-terracotta transition-colors duration-300"
-              >
-                {t('location.mapOpenLink')}
-              </a>
-            )}
+            <a
+              href={MAPS_OPEN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-4 font-sans font-light text-xs tracking-widest uppercase text-taupe hover:text-terracotta transition-colors duration-300"
+              aria-label={t('location.mapOpenAria')}
+            >
+              {t('location.mapOpenLink')}
+            </a>
           </div>
         </div>
       </div>

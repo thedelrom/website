@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import Logo from '@/components/logo.jsx'
@@ -7,6 +7,7 @@ import { trackPageView } from '@/analytics.js'
 
 export default function Explore() {
   const { t, i18n } = useTranslation()
+  const resolved = i18n.resolvedLanguage ?? i18n.language
   const [showOverlay, setShowOverlay] = useState(true)
   const [fadeOut, setFadeOut] = useState(false)
   const mountTime = useRef(Date.now())
@@ -16,14 +17,14 @@ export default function Explore() {
     document.title = t('explore.pageTitle')
   }, [t])
 
-  const handleMapLoaded = () => {
+  const handleMapLoaded = useCallback(() => {
     const elapsed = Date.now() - mountTime.current
     const remaining = Math.max(0, 1800 - elapsed)
     setTimeout(() => {
       setFadeOut(true)
       setTimeout(() => setShowOverlay(false), 700)
     }, remaining)
-  }
+  }, [])
 
   return (
     <div className="h-dvh bg-warmWhite text-espresso flex flex-col overflow-hidden">
@@ -60,13 +61,13 @@ export default function Explore() {
             </Link>
             <button
               onClick={() => {
-                const newLang = i18n.language === 'es' ? 'en' : 'es'
+                const newLang = resolved === 'es' ? 'en' : 'es'
                 i18n.changeLanguage(newLang)
               }}
               className="font-sans font-light text-xs tracking-widest uppercase text-terracotta hover:text-espresso transition-colors"
               aria-label={t('explore.langToggleAria')}
             >
-              {i18n.language === 'es' ? 'EN' : 'ES'}
+              {resolved === 'es' ? 'EN' : 'ES'}
             </button>
           </div>
         </div>
